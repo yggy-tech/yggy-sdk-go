@@ -1,0 +1,3373 @@
+openapi: 3.1.0
+info:
+  contact:
+    email: support@yggy.tech
+    name: yggy support
+    url: https://yggy.tech/support
+  description: HTTP API for yggy. Send an API key on each request. Send one key; a
+    different credential in a second header is refused with 400.
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://yggy.tech/terms
+  title: yggy API
+  version: v1
+externalDocs:
+  description: yggy documentation
+  url: https://docs.yggy.tech/developers/
+servers:
+- description: Production
+  url: https://api.yggy.tech
+- description: Development
+  url: https://api.dev.yggy.tech
+security:
+- bearerAuth: []
+- apiKeyAuth: []
+tags:
+- name: projects
+- name: documents
+- name: query
+- name: chat
+- name: graph
+- name: ontology
+- name: graph-exports
+paths:
+  /api/v1/projects:
+    get:
+      description: "List projects in the active organization with pagination, search,\
+        \ and sort. Default sort is recentlyViewed (last-viewed desc, falling back\
+        \ to createdAt desc), so a user with no views yet gets creation-time order.\
+        \ name orders by project name. Search is a case-insensitive substring over\
+        \ project name and slug."
+      operationId: listProjects
+      parameters:
+      - description: "Page size, from 1 to 100."
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          description: "Page size, from 1 to 100."
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - description: Zero-based offset for pagination.
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          description: Zero-based offset for pagination.
+          minimum: 0
+          nullable: true
+          type: integer
+        style: form
+      - description: Case-insensitive substring search over project name and slug.
+          Omit or leave blank to list every project.
+        explode: true
+        in: query
+        name: q
+        required: false
+        schema:
+          description: Case-insensitive substring search over project name and slug.
+            Omit or leave blank to list every project.
+          maxLength: 200
+          type: string
+        style: form
+      - description: "recentlyViewed orders by the caller's last-viewed timestamp\
+          \ (falls back to createdAt desc when no views exist), createdAt orders by\
+          \ creation time, name orders by project name (case-insensitive)."
+        explode: true
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          default: recentlyViewed
+          description: "recentlyViewed orders by the caller's last-viewed timestamp\
+            \ (falls back to createdAt desc when no views exist), createdAt orders\
+            \ by creation time, name orders by project name (case-insensitive)."
+          enum:
+          - createdAt
+          - recentlyViewed
+          - name
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: sortDir
+        required: false
+        schema:
+          default: desc
+          enum:
+          - asc
+          - desc
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_200_response"
+          description: Projects retrieved successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Bad request - no active organization
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Unauthorized - no active session
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Internal server error
+      summary: List organization projects
+      tags:
+      - projects
+    post:
+      description: Create a new project within the active organization. Projects organize
+        workloads and isolate tokens and integrations.
+      operationId: createProject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createProject_request"
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/createProject_201_response"
+          description: Project created successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Invalid request body
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Unauthorized - no active session
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Forbidden - insufficient permissions
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Conflict - project slug already exists
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Internal server error
+      summary: Create a new project
+      tags:
+      - projects
+  /api/v1/projects/{projectId}/documents:
+    get:
+      description: "Retrieve a list of documents scoped to the project, with optional\
+        \ filtering and pagination."
+      operationId: listDocuments
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - description: "Filter documents by project ID. When omitted, returns all of\
+          \ the organization's documents."
+        explode: true
+        in: query
+        name: projectId
+        required: false
+        schema:
+          description: "Filter documents by project ID. When omitted, returns all\
+            \ of the organization's documents."
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          enum:
+          - pending
+          - processing
+          - completed
+          - failed
+          - stored
+          type: string
+        style: form
+      - description: "Filter by archive state: false (default) excludes archived,\
+          \ true includes all, only shows archived only"
+        explode: true
+        in: query
+        name: archived
+        required: false
+        schema:
+          default: "false"
+          description: "Filter by archive state: false (default) excludes archived,\
+            \ true includes all, only shows archived only"
+          enum:
+          - "true"
+          - "false"
+          - only
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          maximum: 500
+          minimum: 1
+          type: number
+        style: form
+      - explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          minimum: 0
+          nullable: true
+          type: number
+        style: form
+      - explode: true
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          default: createdAt
+          enum:
+          - title
+          - createdAt
+          - updatedAt
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: sortDir
+        required: false
+        schema:
+          default: desc
+          enum:
+          - asc
+          - desc
+          type: string
+        style: form
+      - description: Case-insensitive substring search over title and source filename/path.
+        explode: true
+        in: query
+        name: q
+        required: false
+        schema:
+          description: Case-insensitive substring search over title and source filename/path.
+          maxLength: 200
+          minLength: 1
+          type: string
+        style: form
+      - description: Browse documents in this folder (externalId). Use the literal
+          value `root` for unfiled documents only. Omit to list all documents (legacy).
+        explode: true
+        in: query
+        name: folderId
+        required: false
+        schema:
+          description: Browse documents in this folder (externalId). Use the literal
+            value `root` for unfiled documents only. Omit to list all documents (legacy).
+          minLength: 1
+          type: string
+        style: form
+      - description: "When set, only documents of this note kind (capture, daily,\
+          \ or note)."
+        explode: true
+        in: query
+        name: noteKind
+        required: false
+        schema:
+          description: "When set, only documents of this note kind (capture, daily,\
+            \ or note)."
+          enum:
+          - capture
+          - daily
+          - note
+          type: string
+        style: form
+      - explode: false
+        in: header
+        name: x-yggy-organization-id
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listDocuments_200_response"
+          description: List of documents
+      summary: List documents for a project
+      tags:
+      - documents
+  /api/v1/projects/{projectId}/documents/upload:
+    post:
+      description: "Uploads a document to storage, binds it to the project from the\
+        \ path, and queues it for processing."
+      operationId: uploadDocument
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - explode: false
+        in: header
+        name: x-yggy-organization-id
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/uploadDocument_request"
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/uploadDocument_202_response"
+          description: Document queued for processing
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/uploadDocument_400_response"
+          description: Invalid request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/uploadDocument_400_response"
+          description: Failed to queue document
+      summary: Upload and queue a document for async processing (project-scoped)
+      tags:
+      - documents
+  /api/v1/projects/{projectId}/documents/{id}:
+    delete:
+      description: "Soft-delete a document by its ID, scoped to the project."
+      operationId: deleteDocument
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: header
+        name: x-yggy-organization-id
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/deleteDocument_200_response"
+          description: Document deleted
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Document not found
+      summary: Delete a document and its extracted triples (project-scoped)
+      tags:
+      - documents
+    get:
+      description: "Retrieve the details of a specific document by its ID, scoped\
+        \ to the project."
+      operationId: getDocument
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: header
+        name: x-yggy-organization-id
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listDocuments_200_response_documents_inner"
+          description: Document details
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Document not found
+      summary: Get a document by ID (project-scoped)
+      tags:
+      - documents
+  /api/v1/projects/{projectId}/documents/{id}/status:
+    get:
+      description: "Get the current processing status of a document, including progress\
+        \ and any errors."
+      operationId: getDocumentStatus
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: header
+        name: x-yggy-organization-id
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getDocumentStatus_200_response"
+          description: Document processing status
+      summary: Get document processing status (project-scoped)
+      tags:
+      - documents
+  /api/v1/projects/{projectId}/documents/{id}/status/stream:
+    get:
+      description: Subscribe to real-time document processing status updates via Server-Sent
+        Events (SSE).
+      operationId: streamDocumentStatus
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/event-stream:
+              schema:
+                type: string
+          description: SSE stream of status updates
+      summary: Stream document processing status (project-scoped)
+      tags:
+      - documents
+  /api/v1/projects/{projectId}/documents/{id}/triples:
+    get:
+      description: Retrieve all triples that have been extracted from the specified
+        document.
+      operationId: listDocumentTriples
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: header
+        name: x-yggy-organization-id
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listDocumentTriples_200_response"
+          description: Extracted triples
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Document not found
+      summary: Get triples extracted from a document (project-scoped)
+      tags:
+      - documents
+  /api/v1/projects/{projectId}/documents/{id}/download:
+    get:
+      description: "Download the original file that was uploaded, scoped to the project."
+      operationId: downloadDocument
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: header
+        name: x-yggy-organization-id
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/octet-stream:
+              schema:
+                default: ""
+                type: string
+          description: File content
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Document or file not found
+      summary: Download original document (project-scoped)
+      tags:
+      - documents
+  /api/v1/projects/{projectId}/documents/{id}/retry:
+    post:
+      description: "Re-trigger processing for a document. Purges the old invocation,\
+        \ resets the document status to PENDING, and re-triggers the workflow using\
+        \ the already-stored file."
+      operationId: retryDocument
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: header
+        name: x-yggy-organization-id
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/retryDocument_202_response"
+          description: Document requeued for processing
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/uploadDocument_400_response"
+          description: No stored file available for retry
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/uploadDocument_400_response"
+          description: Document not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/uploadDocument_400_response"
+          description: Document is already being processed
+      summary: Retry document processing (project-scoped)
+      tags:
+      - documents
+  /api/v1/projects/{projectId}/documents/{id}/re-extract:
+    post:
+      description: Delete existing triples and re-trigger extraction. Structured documents
+        reuse a stored mapping when it still validates against the current ontology
+        and identity contract; otherwise a new mapping is generated. Unstructured
+        documents re-run the full extraction pipeline.
+      operationId: reExtractDocument
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: header
+        name: x-yggy-organization-id
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/retryDocument_202_response"
+          description: Re-extraction started
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Document cannot be re-extracted
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Document not found
+      summary: Re-extract triples from a document (project-scoped)
+      tags:
+      - documents
+  /api/v1/projects/{projectId}/query:
+    post:
+      description: "Return ranked document contexts for a question in one project.\
+        \ Chat remains the conversational surface. This route is retrieve-only. Add\
+        \ include to attach matching entities, triples, or approved identity."
+      operationId: queryProject
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - explode: false
+        in: header
+        name: x-yggy-organization-id
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/queryProject_request"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/queryProject_200_response"
+          description: Ranked contexts and an extractive answer
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Invalid request or usage limit exceeded
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Authentication required
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Project access denied
+      security:
+      - bearerAuth: []
+      summary: Retrieve ranked documents for a project
+      tags:
+      - query
+  /api/v1/query:
+    post:
+      description: "Return ranked document contexts for a question across every project\
+        \ the caller can access. Same body as the project query, including optional\
+        \ include."
+      operationId: queryOrganization
+      parameters:
+      - explode: false
+        in: header
+        name: x-yggy-organization-id
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/queryProject_request"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/queryProject_200_response"
+          description: Ranked contexts and an extractive answer
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Invalid request or usage limit exceeded
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Authentication required
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Project access denied
+      security:
+      - bearerAuth: []
+      summary: Retrieve ranked documents across the organization
+      tags:
+      - query
+  /api/v1/projects/{projectId}/chat:
+    post:
+      description: |-
+        Ask questions about your documents using the knowledge graph.
+
+        The AI agent will search the graph, find relevant entities and relationships, and synthesize an answer.
+
+        Examples of questions you can ask:
+        - "Who founded Acme Corp?"
+        - "What topics are discussed in my documents?"
+        - "How is John Smith related to the AI project?"
+        - "What are the main entities mentioned?"
+      operationId: chat
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/chat_request"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/chat_200_response"
+          description: Chat response
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/chat_401_response"
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/chat_401_response"
+          description: Project access denied
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/chat_401_response"
+          description: Internal server error
+      security:
+      - bearerAuth: []
+      summary: Chat with Knowledge Graph
+      tags:
+      - chat
+  /api/v1/projects/{projectId}/graph/entities/by-identity:
+    get:
+      operationId: getEntityByIdentity
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - description: Stable identity URI of the organization entity
+        explode: true
+        in: query
+        name: uri
+        required: true
+        schema:
+          description: Stable identity URI of the organization entity
+          format: uri
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityRead"
+          description: Entity read
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Entity not found
+      summary: Read an organization entity and this project's facts about it
+      tags:
+      - graph
+  /api/v1/projects/{projectId}/ontology/overview:
+    get:
+      description: Returns ontology versions and totals for one project. List endpoints
+        page the vocabulary.
+      operationId: getOntologyOverview
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getOntologyOverview_200_response"
+          description: Ontology summary
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getOntologyOverview_401_response"
+          description: Unauthorized
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getOntologyOverview_401_response"
+          description: Internal server error
+      summary: Project ontology summary
+      tags:
+      - ontology
+  /api/v1/projects/{projectId}/graph-exports:
+    get:
+      operationId: listGraphExports
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listGraphExports_200_response"
+          description: Exports that have not expired
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Project not found
+      summary: List project graph exports from the last 7 days
+      tags:
+      - graph-exports
+    post:
+      operationId: createGraphExport
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createGraphExport_request"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listGraphExports_200_response_exports_inner"
+          description: Export queued
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Project not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: An export is already running
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Too many exports
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Export could not be started
+      summary: Start a project graph export
+      tags:
+      - graph-exports
+  /api/v1/projects/{projectId}/graph-exports/{exportId}/download:
+    get:
+      operationId: downloadGraphExport
+      parameters:
+      - explode: false
+        in: path
+        name: projectId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: exportId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/zip:
+              schema:
+                type: string
+          description: Zip archive
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Export not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listProjects_400_response"
+          description: Export is not ready
+      summary: Download a ready project graph export
+      tags:
+      - graph-exports
+components:
+  parameters: {}
+  schemas:
+    EntityRead:
+      example:
+        projects:
+        - projects
+        - projects
+        documents:
+        - literals:
+          - sourceField: sourceField
+            datatype: BOOLEAN
+            property: property
+            projectExternalId: projectExternalId
+            value: value
+            status: ACTIVE
+          - sourceField: sourceField
+            datatype: BOOLEAN
+            property: property
+            projectExternalId: projectExternalId
+            value: value
+            status: ACTIVE
+          documentId: documentId
+          title: title
+          facts:
+          - predicate: predicate
+            other:
+              identityUri: identityUri
+              label: label
+              type: type
+            projectExternalId: projectExternalId
+            direction: outgoing
+            status: ACTIVE
+          - predicate: predicate
+            other:
+              identityUri: identityUri
+              label: label
+              type: type
+            projectExternalId: projectExternalId
+            direction: outgoing
+            status: ACTIVE
+        - literals:
+          - sourceField: sourceField
+            datatype: BOOLEAN
+            property: property
+            projectExternalId: projectExternalId
+            value: value
+            status: ACTIVE
+          - sourceField: sourceField
+            datatype: BOOLEAN
+            property: property
+            projectExternalId: projectExternalId
+            value: value
+            status: ACTIVE
+          documentId: documentId
+          title: title
+          facts:
+          - predicate: predicate
+            other:
+              identityUri: identityUri
+              label: label
+              type: type
+            projectExternalId: projectExternalId
+            direction: outgoing
+            status: ACTIVE
+          - predicate: predicate
+            other:
+              identityUri: identityUri
+              label: label
+              type: type
+            projectExternalId: projectExternalId
+            direction: outgoing
+            status: ACTIVE
+        truncated: true
+        entity:
+          aliases:
+          - aliases
+          - aliases
+          homeProjectExternalId: homeProjectExternalId
+          canonicalId: canonicalId
+          identity:
+            sourceField: sourceField
+            namespaceUri: namespaceUri
+            sourceValue: sourceValue
+            uri: uri
+            authorityApproved: true
+          id: id
+          label: label
+          type: type
+      properties:
+        entity:
+          $ref: "#/components/schemas/EntityRead_entity"
+        projects:
+          description: Projects the caller can see that hold a fact or literal about
+            the entity (also on the project route)
+          items:
+            type: string
+          type: array
+        documents:
+          items:
+            $ref: "#/components/schemas/EntityRead_documents_inner"
+          type: array
+        truncated:
+          description: True when a fact or literal list hit the read cap; the read
+            is partial
+          type: boolean
+      required:
+      - documents
+      - entity
+      - projects
+      - truncated
+    listProjects_200_response_projects_inner:
+      example:
+        documentCount: 0
+        entityMergeMode: auto
+        color: color
+        extractionSkip:
+        - extractionSkip
+        - extractionSkip
+        - extractionSkip
+        - extractionSkip
+        - extractionSkip
+        kind: shared
+        externalId: externalId
+        organizationId: organizationId
+        createdAt: createdAt
+        entityCount: 0
+        name: name
+        extractionPurpose: extractionPurpose
+        tripleCount: 0
+        id: id
+        extractionGuidanceRevision: 0
+        extractionInclude:
+        - extractionInclude
+        - extractionInclude
+        - extractionInclude
+        - extractionInclude
+        - extractionInclude
+        slug: slug
+        updatedAt: updatedAt
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+        organizationId:
+          type: string
+        externalId:
+          nullable: true
+          type: string
+        kind:
+          enum:
+          - shared
+          - personal
+          type: string
+        extractionPurpose:
+          maxLength: 500
+          nullable: true
+          type: string
+        extractionInclude:
+          items:
+            maxLength: 120
+            type: string
+          maxItems: 25
+          type: array
+        extractionSkip:
+          items:
+            maxLength: 120
+            type: string
+          maxItems: 25
+          type: array
+        extractionGuidanceRevision:
+          minimum: 0
+          type: integer
+        entityMergeMode:
+          enum:
+          - auto
+          - always_review
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        documentCount:
+          minimum: 0
+          type: integer
+        tripleCount:
+          minimum: 0
+          type: integer
+        entityCount:
+          minimum: 0
+          type: integer
+      required:
+      - color
+      - documentCount
+      - entityCount
+      - id
+      - name
+      - organizationId
+      - slug
+      - tripleCount
+    listProjects_200_response:
+      example:
+        pinned:
+        - documentCount: 0
+          entityMergeMode: auto
+          color: color
+          extractionSkip:
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          kind: shared
+          externalId: externalId
+          organizationId: organizationId
+          createdAt: createdAt
+          entityCount: 0
+          name: name
+          extractionPurpose: extractionPurpose
+          tripleCount: 0
+          id: id
+          extractionGuidanceRevision: 0
+          extractionInclude:
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          slug: slug
+          updatedAt: updatedAt
+        - documentCount: 0
+          entityMergeMode: auto
+          color: color
+          extractionSkip:
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          kind: shared
+          externalId: externalId
+          organizationId: organizationId
+          createdAt: createdAt
+          entityCount: 0
+          name: name
+          extractionPurpose: extractionPurpose
+          tripleCount: 0
+          id: id
+          extractionGuidanceRevision: 0
+          extractionInclude:
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          slug: slug
+          updatedAt: updatedAt
+        total: 0
+        projects:
+        - documentCount: 0
+          entityMergeMode: auto
+          color: color
+          extractionSkip:
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          kind: shared
+          externalId: externalId
+          organizationId: organizationId
+          createdAt: createdAt
+          entityCount: 0
+          name: name
+          extractionPurpose: extractionPurpose
+          tripleCount: 0
+          id: id
+          extractionGuidanceRevision: 0
+          extractionInclude:
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          slug: slug
+          updatedAt: updatedAt
+        - documentCount: 0
+          entityMergeMode: auto
+          color: color
+          extractionSkip:
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          kind: shared
+          externalId: externalId
+          organizationId: organizationId
+          createdAt: createdAt
+          entityCount: 0
+          name: name
+          extractionPurpose: extractionPurpose
+          tripleCount: 0
+          id: id
+          extractionGuidanceRevision: 0
+          extractionInclude:
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          slug: slug
+          updatedAt: updatedAt
+        offset: 0
+        success: true
+        limit: 2
+        personal:
+          documentCount: 0
+          entityMergeMode: auto
+          color: color
+          extractionSkip:
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          kind: shared
+          externalId: externalId
+          organizationId: organizationId
+          createdAt: createdAt
+          entityCount: 0
+          name: name
+          extractionPurpose: extractionPurpose
+          tripleCount: 0
+          id: id
+          extractionGuidanceRevision: 0
+          extractionInclude:
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          slug: slug
+          updatedAt: updatedAt
+      properties:
+        success:
+          type: boolean
+        projects:
+          items:
+            $ref: "#/components/schemas/listProjects_200_response_projects_inner"
+          type: array
+        pinned:
+          items:
+            $ref: "#/components/schemas/listProjects_200_response_projects_inner"
+          type: array
+        personal:
+          $ref: "#/components/schemas/listProjects_200_response_projects_inner"
+        total:
+          minimum: 0
+          type: integer
+        limit:
+          type: integer
+        offset:
+          minimum: 0
+          type: integer
+      required:
+      - limit
+      - offset
+      - personal
+      - pinned
+      - projects
+      - success
+      - total
+    listProjects_400_response_error:
+      example:
+        code: INTERNAL_ERROR
+        details: ""
+        message: message
+      properties:
+        message:
+          type: string
+        code:
+          enum:
+          - INTERNAL_ERROR
+          - VALIDATION_ERROR
+          - UNAUTHORIZED
+          - RATE_LIMITED
+          - ORG_REQUIRED
+          - FORBIDDEN
+          - NOT_FOUND
+          - CONFLICT
+          - PROJECT_DENIED
+          - USAGE_LIMIT_EXCEEDED
+          - HUGINN_ERROR
+          - HUGINN_STREAM_ERROR
+          - QUERY_FAILED
+          - PROVIDER_CONFLICT
+          - PROVIDER_CONFIG_INVALID
+          - PROVIDER_NOT_CONNECTED
+          - PROVIDER_RATE_LIMITED
+          - PROJECT_MEMBER_USER_NOT_IN_ORG
+          - PROJECT_MEMBER_UNKNOWN_ROLE
+          - PROJECT_MEMBER_LAST_OWNER
+          - PROJECT_CONFLICT
+          - STORAGE_NOT_CONFIGURED
+          - BILLING_NOT_CONFIGURED
+          - PLAN_REQUIRED
+          - MEMBER_LIMIT_REACHED
+          - PROJECT_MEMBERSHIP_JWT_TOO_LARGE
+          - WEBHOOK_URL_INVALID
+          - WEBHOOK_ADDRESS_BLOCKED
+          - WEBHOOK_EVENT_UNKNOWN
+          - WEBHOOK_ENDPOINT_LIMIT
+          - WEBHOOK_ENDPOINT_DISABLED
+          - WEBHOOK_DELIVERY_IN_PROGRESS
+          - ORG_KEY_PERSONAL_SCOPE
+          - API_KEY_PERMISSION_EXCEEDS_ROLE
+          - API_KEY_NO_PERMISSIONS
+          - ORG_KEY_GRAPH_SCOPE_UNAVAILABLE
+          - ORG_KEY_TOO_MANY_PROJECTS
+          type: string
+        details: {}
+      required:
+      - code
+      - message
+    listProjects_400_response:
+      example:
+        success: true
+        error:
+          code: INTERNAL_ERROR
+          details: ""
+          message: message
+      properties:
+        success:
+          enum:
+          - false
+          type: boolean
+        error:
+          $ref: "#/components/schemas/listProjects_400_response_error"
+      required:
+      - error
+      - success
+    createProject_request:
+      properties:
+        name:
+          description: Project name
+          maxLength: 100
+          minLength: 1
+          type: string
+        slug:
+          description: Project slug (used in URLs)
+          maxLength: 50
+          minLength: 1
+          pattern: "^[a-z0-9-]+$"
+          type: string
+        color:
+          description: Project color preset (auto-assigned if omitted)
+          enum:
+          - gray
+          - lime
+          - purple
+          - orange
+          - cyan
+          - rose
+          - indigo
+          - gold
+          - coral
+          type: string
+      required:
+      - name
+      - slug
+    createProject_201_response_project:
+      example:
+        entityMergeMode: auto
+        color: color
+        extractionSkip:
+        - extractionSkip
+        - extractionSkip
+        - extractionSkip
+        - extractionSkip
+        - extractionSkip
+        kind: shared
+        externalId: externalId
+        organizationId: organizationId
+        createdAt: createdAt
+        name: name
+        extractionPurpose: extractionPurpose
+        id: id
+        extractionGuidanceRevision: 0
+        extractionInclude:
+        - extractionInclude
+        - extractionInclude
+        - extractionInclude
+        - extractionInclude
+        - extractionInclude
+        slug: slug
+        updatedAt: updatedAt
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+        organizationId:
+          type: string
+        externalId:
+          nullable: true
+          type: string
+        kind:
+          enum:
+          - shared
+          - personal
+          type: string
+        extractionPurpose:
+          maxLength: 500
+          nullable: true
+          type: string
+        extractionInclude:
+          items:
+            maxLength: 120
+            type: string
+          maxItems: 25
+          type: array
+        extractionSkip:
+          items:
+            maxLength: 120
+            type: string
+          maxItems: 25
+          type: array
+        extractionGuidanceRevision:
+          minimum: 0
+          type: integer
+        entityMergeMode:
+          enum:
+          - auto
+          - always_review
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+      - color
+      - id
+      - name
+      - organizationId
+      - slug
+    createProject_201_response:
+      example:
+        success: true
+        project:
+          entityMergeMode: auto
+          color: color
+          extractionSkip:
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          - extractionSkip
+          kind: shared
+          externalId: externalId
+          organizationId: organizationId
+          createdAt: createdAt
+          name: name
+          extractionPurpose: extractionPurpose
+          id: id
+          extractionGuidanceRevision: 0
+          extractionInclude:
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          - extractionInclude
+          slug: slug
+          updatedAt: updatedAt
+      properties:
+        success:
+          type: boolean
+        project:
+          $ref: "#/components/schemas/createProject_201_response_project"
+      required:
+      - project
+      - success
+    listDocuments_200_response_documents_inner:
+      example:
+        ocrStrategy: ocrStrategy
+        code: code
+        extractionStats: extractionStats
+        source: source
+        title: title
+        error: error
+        sourceMetadata: sourceMetadata
+        content: content
+        guidanceRecommendations: guidanceRecommendations
+        provenanceChain: provenanceChain
+        inferenceMode: inferenceMode
+        createdAt: createdAt
+        ownerDisplayName: ownerDisplayName
+        tripleCount: 0.8008281904610115
+        processingSummary: processingSummary
+        contentType: contentType
+        updatedAt: updatedAt
+        sourceCreatedAt: sourceCreatedAt
+        originSystem: originSystem
+        structuredRegions: structuredRegions
+        invocationId: invocationId
+        ownerExternalId: ownerExternalId
+        modelUsed: modelUsed
+        sourceModifiedAt: sourceModifiedAt
+        deletedAt: deletedAt
+        sourceKind: UPLOAD
+        documentId: documentId
+        extractionMethod: UNSTRUCTURED
+        sourceAuthor: sourceAuthor
+        projectExternalId: projectExternalId
+        extractionGuidanceRevision: 0
+        failureMessage: failureMessage
+        storageUrl: storageUrl
+        status: PENDING
+      properties:
+        documentId:
+          type: string
+        invocationId:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        source:
+          type: string
+        sourceKind:
+          enum:
+          - UPLOAD
+          - GOOGLE_DRIVE
+          - MICROSOFT_DRIVE
+          - GMAIL
+          - OUTLOOK
+          - SLACK
+          - NOTION
+          - LINEAR
+          - CHAT
+          - SEED
+          - null
+          nullable: true
+          type: string
+        originSystem:
+          nullable: true
+          type: string
+        ownerExternalId:
+          nullable: true
+          type: string
+        ownerDisplayName:
+          nullable: true
+          type: string
+        contentType:
+          type: string
+        status:
+          enum:
+          - PENDING
+          - PROCESSING
+          - COMPLETED
+          - FAILED
+          - STORED
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        tripleCount:
+          type: number
+        error:
+          type: string
+        code:
+          type: string
+        failureMessage:
+          type: string
+        storageUrl:
+          type: string
+        deletedAt:
+          type: string
+        extractionMethod:
+          enum:
+          - UNSTRUCTURED
+          - STRUCTURED_SGSE
+          - MANUAL
+          - HYBRID
+          type: string
+        structuredRegions:
+          nullable: true
+          type: string
+        provenanceChain:
+          nullable: true
+          type: string
+        extractionStats:
+          nullable: true
+          type: string
+        processingSummary:
+          nullable: true
+          type: string
+        modelUsed:
+          nullable: true
+          type: string
+        ocrStrategy:
+          nullable: true
+          type: string
+        inferenceMode:
+          nullable: true
+          type: string
+        extractionGuidanceRevision:
+          minimum: 0
+          nullable: true
+          type: integer
+        guidanceRecommendations:
+          nullable: true
+          type: string
+        sourceCreatedAt:
+          nullable: true
+          type: string
+        sourceModifiedAt:
+          nullable: true
+          type: string
+        sourceAuthor:
+          nullable: true
+          type: string
+        sourceMetadata:
+          nullable: true
+          type: string
+        projectExternalId:
+          nullable: true
+          type: string
+      required:
+      - contentType
+      - createdAt
+      - documentId
+      - status
+      - title
+      - updatedAt
+    listDocuments_200_response:
+      example:
+        total: 1.4658129805029452
+        offset: 5.637376656633329
+        documents:
+        - ocrStrategy: ocrStrategy
+          code: code
+          extractionStats: extractionStats
+          source: source
+          title: title
+          error: error
+          sourceMetadata: sourceMetadata
+          content: content
+          guidanceRecommendations: guidanceRecommendations
+          provenanceChain: provenanceChain
+          inferenceMode: inferenceMode
+          createdAt: createdAt
+          ownerDisplayName: ownerDisplayName
+          tripleCount: 0.8008281904610115
+          processingSummary: processingSummary
+          contentType: contentType
+          updatedAt: updatedAt
+          sourceCreatedAt: sourceCreatedAt
+          originSystem: originSystem
+          structuredRegions: structuredRegions
+          invocationId: invocationId
+          ownerExternalId: ownerExternalId
+          modelUsed: modelUsed
+          sourceModifiedAt: sourceModifiedAt
+          deletedAt: deletedAt
+          sourceKind: UPLOAD
+          documentId: documentId
+          extractionMethod: UNSTRUCTURED
+          sourceAuthor: sourceAuthor
+          projectExternalId: projectExternalId
+          extractionGuidanceRevision: 0
+          failureMessage: failureMessage
+          storageUrl: storageUrl
+          status: PENDING
+        - ocrStrategy: ocrStrategy
+          code: code
+          extractionStats: extractionStats
+          source: source
+          title: title
+          error: error
+          sourceMetadata: sourceMetadata
+          content: content
+          guidanceRecommendations: guidanceRecommendations
+          provenanceChain: provenanceChain
+          inferenceMode: inferenceMode
+          createdAt: createdAt
+          ownerDisplayName: ownerDisplayName
+          tripleCount: 0.8008281904610115
+          processingSummary: processingSummary
+          contentType: contentType
+          updatedAt: updatedAt
+          sourceCreatedAt: sourceCreatedAt
+          originSystem: originSystem
+          structuredRegions: structuredRegions
+          invocationId: invocationId
+          ownerExternalId: ownerExternalId
+          modelUsed: modelUsed
+          sourceModifiedAt: sourceModifiedAt
+          deletedAt: deletedAt
+          sourceKind: UPLOAD
+          documentId: documentId
+          extractionMethod: UNSTRUCTURED
+          sourceAuthor: sourceAuthor
+          projectExternalId: projectExternalId
+          extractionGuidanceRevision: 0
+          failureMessage: failureMessage
+          storageUrl: storageUrl
+          status: PENDING
+        limit: 5.962133916683182
+      properties:
+        documents:
+          items:
+            $ref: "#/components/schemas/listDocuments_200_response_documents_inner"
+          type: array
+        total:
+          type: number
+        limit:
+          type: number
+        offset:
+          type: number
+      required:
+      - documents
+      - limit
+      - offset
+      - total
+    uploadDocument_request:
+      properties:
+        file:
+          description: The document file to upload. Optional when text is set.
+          format: binary
+          type: string
+        text:
+          description: Plain text or markdown body. Used when no file is uploaded.
+          type: string
+        noteKind:
+          description: "Note kind. When set, the upload is stored on the caller's\
+            \ personal organization."
+          enum:
+          - capture
+          - daily
+          - note
+          type: string
+        parentNoteId:
+          description: "yggy notes: attach the file to this note. The file becomes\
+            \ a document of its own that belongs to the note, and needs a file."
+          pattern: "^[A-Za-z0-9_-]{1,128}$"
+          type: string
+        title:
+          description: Document title
+          type: string
+        source:
+          description: Source identifier
+          type: string
+        originSystem:
+          description: Business system the data originates from
+          maxLength: 80
+          type: string
+        projectId:
+          description: Project ID to bind the document to at upload time
+          type: string
+        desiredTier:
+          description: Model tier for extraction. Defaults to auto.
+          enum:
+          - auto
+          - fast
+          - balanced
+          - accurate
+          - extract
+          type: string
+        inferenceMode:
+          description: Inference routing for extraction. Defaults to org settings.
+          enum:
+          - cloud
+          - self-hosted
+          - hybrid
+          type: string
+    uploadDocument_202_response:
+      example:
+        internalId: internalId
+        success: true
+        documentId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        storagePath: storagePath
+        message: message
+        invocationId: invocationId
+        storageUrl: storageUrl
+        status: queued
+      properties:
+        success:
+          type: boolean
+        documentId:
+          format: uuid
+          type: string
+        internalId:
+          type: string
+        invocationId:
+          type: string
+        status:
+          description: "stored: saved without analysis because the account has no\
+            \ credits"
+          enum:
+          - queued
+          - stored
+          type: string
+        storagePath:
+          nullable: true
+          type: string
+        storageUrl:
+          nullable: true
+          type: string
+        message:
+          type: string
+      required:
+      - documentId
+      - internalId
+      - invocationId
+      - message
+      - status
+      - storagePath
+      - storageUrl
+      - success
+    uploadDocument_400_response:
+      example:
+        success: false
+        error: error
+        message: message
+      properties:
+        success:
+          default: false
+          type: boolean
+        error:
+          type: string
+        message:
+          type: string
+      required:
+      - error
+    deleteDocument_200_response:
+      example:
+        success: true
+      properties:
+        success:
+          type: boolean
+      required:
+      - success
+    getDocumentStatus_200_response_steps_inner:
+      example:
+        completedAt: 9.301444243932576
+        current: 2.027123023002322
+        total: 4.145608029883936
+        unit: unit
+        name: name
+        startedAt: 7.061401241503109
+        id: id
+        message: message
+        durationMs: 3.616076749251911
+        status: pending
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
+          - cancelled
+          - paused
+          type: string
+        startedAt:
+          type: number
+        completedAt:
+          type: number
+        durationMs:
+          type: number
+        message:
+          type: string
+        current:
+          type: number
+        total:
+          type: number
+        unit:
+          type: string
+      required:
+      - id
+      - name
+      - status
+    getDocumentStatus_200_response:
+      example:
+        ontologyProposalCount: 6.027456183070403
+        retryable: true
+        paused: true
+        code: code
+        extractionTier: fast
+        extractionMode: structured
+        error: error
+        awaitingOntologyReview: true
+        ontologyReviewId: ontologyReviewId
+        outputTokens: 5.637376656633329
+        updatedAt: 7.386281948385884
+        triplesExtracted: 1.4658129805029452
+        inputTokens: 5.962133916683182
+        completed: true
+        failed: true
+        workflowError: workflowError
+        message: message
+        estimatedRemainingMs: 2.3021358869347655
+        steps:
+        - completedAt: 9.301444243932576
+          current: 2.027123023002322
+          total: 4.145608029883936
+          unit: unit
+          name: name
+          startedAt: 7.061401241503109
+          id: id
+          message: message
+          durationMs: 3.616076749251911
+          status: pending
+        - completedAt: 9.301444243932576
+          current: 2.027123023002322
+          total: 4.145608029883936
+          unit: unit
+          name: name
+          startedAt: 7.061401241503109
+          id: id
+          message: message
+          durationMs: 3.616076749251911
+          status: pending
+        invocationId: invocationId
+        stored: true
+        stages:
+        - completedAt: 9.301444243932576
+          current: 2.027123023002322
+          total: 4.145608029883936
+          unit: unit
+          name: name
+          startedAt: 7.061401241503109
+          id: id
+          message: message
+          durationMs: 3.616076749251911
+          status: pending
+        - completedAt: 9.301444243932576
+          current: 2.027123023002322
+          total: 4.145608029883936
+          unit: unit
+          name: name
+          startedAt: 7.061401241503109
+          id: id
+          message: message
+          durationMs: 3.616076749251911
+          status: pending
+        progress: 8.008281904610115
+        documentId: documentId
+        step: step
+        failureMessage: failureMessage
+        status: pending
+      properties:
+        documentId:
+          type: string
+        step:
+          type: string
+        progress:
+          maximum: 100
+          minimum: 0
+          type: number
+        message:
+          type: string
+        paused:
+          type: boolean
+        completed:
+          type: boolean
+        failed:
+          type: boolean
+        stored:
+          type: boolean
+        awaitingOntologyReview:
+          type: boolean
+        ontologyReviewId:
+          type: string
+        ontologyProposalCount:
+          type: number
+        error:
+          type: string
+        code:
+          type: string
+        failureMessage:
+          type: string
+        status:
+          enum:
+          - pending
+          - running
+          - suspended
+          - failed
+          type: string
+        workflowError:
+          type: string
+        retryable:
+          type: boolean
+        triplesExtracted:
+          type: number
+        inputTokens:
+          type: number
+        outputTokens:
+          type: number
+        extractionTier:
+          enum:
+          - fast
+          - balanced
+          - accurate
+          type: string
+        extractionMode:
+          enum:
+          - structured
+          type: string
+        estimatedRemainingMs:
+          type: number
+        steps:
+          items:
+            $ref: "#/components/schemas/getDocumentStatus_200_response_steps_inner"
+          type: array
+        stages:
+          items:
+            $ref: "#/components/schemas/getDocumentStatus_200_response_steps_inner"
+          type: array
+        invocationId:
+          type: string
+        updatedAt:
+          type: number
+      required:
+      - completed
+      - documentId
+      - failed
+      - progress
+      - updatedAt
+    listDocumentTriples_200_response_triples_inner_subjectIdentity:
+      example:
+        approved: true
+        field: field
+        identityUri: identityUri
+        value: value
+      properties:
+        field:
+          type: string
+        value:
+          type: string
+        identityUri:
+          type: string
+        approved:
+          type: boolean
+      required:
+      - field
+      - value
+    listDocumentTriples_200_response_triples_inner_qualifiers:
+      example:
+        amount: amount
+        unit: unit
+        confidence: 0.8008281904610115
+        currency: currency
+        location: location
+      properties:
+        amount:
+          type: string
+        currency:
+          type: string
+        unit:
+          type: string
+        location:
+          type: string
+        confidence:
+          type: number
+    listDocumentTriples_200_response_triples_inner:
+      example:
+        subjectIdentity:
+          approved: true
+          field: field
+          identityUri: identityUri
+          value: value
+        note: note
+        evidence:
+        - evidence
+        - evidence
+        subject: subject
+        objectIdentityUri: objectIdentityUri
+        qualifiers:
+          amount: amount
+          unit: unit
+          confidence: 0.8008281904610115
+          currency: currency
+          location: location
+        created_at: created_at
+        subjectIdentityUri: subjectIdentityUri
+        source: source
+        subjectType: subjectType
+        evidenceRegionId: evidenceRegionId
+        subjectId: subjectId
+        objectType: objectType
+        predicate: predicate
+        extractionMethod: UNSTRUCTURED
+        id: id
+        objectId: objectId
+        object: object
+        status: ACTIVE
+      properties:
+        id:
+          type: string
+        subject:
+          type: string
+        predicate:
+          type: string
+        object:
+          type: string
+        subjectIdentity:
+          $ref: "#/components/schemas/listDocumentTriples_200_response_triples_inner_subjectIdentity"
+        subjectId:
+          type: string
+        subjectType:
+          type: string
+        subjectIdentityUri:
+          type: string
+        objectId:
+          type: string
+        objectType:
+          type: string
+        objectIdentityUri:
+          type: string
+        qualifiers:
+          $ref: "#/components/schemas/listDocumentTriples_200_response_triples_inner_qualifiers"
+        source:
+          type: string
+        extractionMethod:
+          enum:
+          - UNSTRUCTURED
+          - STRUCTURED_SGSE
+          - MANUAL
+          - HYBRID
+          type: string
+        evidence:
+          items:
+            type: string
+          type: array
+        evidenceRegionId:
+          type: string
+        note:
+          type: string
+        created_at:
+          type: string
+        status:
+          enum:
+          - ACTIVE
+          - SUPERSEDED
+          - CONFLICTING
+          - RETRACTED
+          - PENDING_ONTOLOGY
+          - SOURCE_DELETED
+          type: string
+      required:
+      - object
+      - predicate
+      - subject
+    listDocumentTriples_200_response:
+      example:
+        triples:
+        - subjectIdentity:
+            approved: true
+            field: field
+            identityUri: identityUri
+            value: value
+          note: note
+          evidence:
+          - evidence
+          - evidence
+          subject: subject
+          objectIdentityUri: objectIdentityUri
+          qualifiers:
+            amount: amount
+            unit: unit
+            confidence: 0.8008281904610115
+            currency: currency
+            location: location
+          created_at: created_at
+          subjectIdentityUri: subjectIdentityUri
+          source: source
+          subjectType: subjectType
+          evidenceRegionId: evidenceRegionId
+          subjectId: subjectId
+          objectType: objectType
+          predicate: predicate
+          extractionMethod: UNSTRUCTURED
+          id: id
+          objectId: objectId
+          object: object
+          status: ACTIVE
+        - subjectIdentity:
+            approved: true
+            field: field
+            identityUri: identityUri
+            value: value
+          note: note
+          evidence:
+          - evidence
+          - evidence
+          subject: subject
+          objectIdentityUri: objectIdentityUri
+          qualifiers:
+            amount: amount
+            unit: unit
+            confidence: 0.8008281904610115
+            currency: currency
+            location: location
+          created_at: created_at
+          subjectIdentityUri: subjectIdentityUri
+          source: source
+          subjectType: subjectType
+          evidenceRegionId: evidenceRegionId
+          subjectId: subjectId
+          objectType: objectType
+          predicate: predicate
+          extractionMethod: UNSTRUCTURED
+          id: id
+          objectId: objectId
+          object: object
+          status: ACTIVE
+        count: 6.027456183070403
+      properties:
+        triples:
+          items:
+            $ref: "#/components/schemas/listDocumentTriples_200_response_triples_inner"
+          type: array
+        count:
+          type: number
+      required:
+      - count
+      - triples
+    retryDocument_202_response:
+      example:
+        success: true
+        documentId: documentId
+        message: message
+        invocationId: invocationId
+        status: queued
+      properties:
+        success:
+          type: boolean
+        documentId:
+          type: string
+        invocationId:
+          type: string
+        status:
+          enum:
+          - queued
+          type: string
+        message:
+          type: string
+      required:
+      - documentId
+      - invocationId
+      - message
+      - status
+      - success
+    queryProject_request:
+      properties:
+        question:
+          description: Natural-language question to retrieve documents for
+          maxLength: 2000
+          minLength: 1
+          type: string
+        topK:
+          default: 5
+          description: Maximum number of ranked contexts to return
+          maximum: 20
+          minimum: 1
+          type: integer
+        mode:
+          default: hybrid
+          description: hybrid combines document text with graph matches; lexical uses
+            document text only; graph uses graph matches only
+          enum:
+          - hybrid
+          - lexical
+          - graph
+          type: string
+        include:
+          description: Optional graph fields to attach. Omit for the default retrieve
+            body. identity alone returns only entities with an approved identity.
+          items:
+            enum:
+            - entities
+            - triples
+            - identity
+            type: string
+          maxItems: 3
+          type: array
+        includeArchived:
+          default: false
+          description: Also search cold triples. Archived hits surface separately
+            and trigger a background promote. Single-project scope only.
+          type: boolean
+      required:
+      - question
+    queryProject_200_response_contexts_inner:
+      example:
+        snippet: snippet
+        score: 0.8008281904610115
+        documentId: documentId
+        id: id
+        source: source
+        title: title
+      properties:
+        id:
+          description: "Stable context id: source slug when present, otherwise the\
+            \ document id"
+          type: string
+        documentId:
+          description: Document id
+          type: string
+        source:
+          description: Caller-supplied source id when the document has one
+          type: string
+        title:
+          description: Document title
+          type: string
+        snippet:
+          description: Short passage used for ranking
+          type: string
+        score:
+          description: Relative rank from 0 to 1 inside this result set
+          type: number
+      required:
+      - documentId
+      - id
+      - score
+      - snippet
+      - title
+    queryProject_200_response_entities_inner_identity:
+      example:
+        namespaceUri: namespaceUri
+        value: value
+      properties:
+        namespaceUri:
+          description: "Approved identity namespace, for example a Wikidata entity\
+            \ prefix"
+          type: string
+        value:
+          description: Value in that namespace
+          type: string
+      required:
+      - namespaceUri
+      - value
+    queryProject_200_response_entities_inner:
+      example:
+        score: 6.027456183070403
+        identity:
+          namespaceUri: namespaceUri
+          value: value
+        label: label
+        type: type
+        uri: uri
+        documentIds:
+        - documentIds
+        - documentIds
+      properties:
+        uri:
+          description: Public entity URI. Never a graph uid.
+          type: string
+        label:
+          type: string
+        type:
+          description: Public class URI
+          type: string
+        score:
+          type: number
+        documentIds:
+          description: Ranked context document ids this entity matched
+          items:
+            type: string
+          type: array
+        identity:
+          $ref: "#/components/schemas/queryProject_200_response_entities_inner_identity"
+      required:
+      - documentIds
+      - label
+      - score
+    queryProject_200_response_triples_inner_subject:
+      example:
+        label: label
+        uri: uri
+      properties:
+        uri:
+          description: Public HTTPS URI when one is stored
+          type: string
+        label:
+          type: string
+      required:
+      - label
+    queryProject_200_response_triples_inner:
+      example:
+        predicate:
+          label: label
+          uri: uri
+        evidence: evidence
+        subject:
+          label: label
+          uri: uri
+        documentId: documentId
+        object:
+          label: label
+          uri: uri
+      properties:
+        subject:
+          $ref: "#/components/schemas/queryProject_200_response_triples_inner_subject"
+        predicate:
+          $ref: "#/components/schemas/queryProject_200_response_triples_inner_subject"
+        object:
+          $ref: "#/components/schemas/queryProject_200_response_triples_inner_subject"
+        evidence:
+          description: Stored hit text. Omitted when the graph hit has none.
+          type: string
+        documentId:
+          type: string
+      required:
+      - object
+      - predicate
+      - subject
+    queryProject_200_response_archivedHits_inner:
+      example:
+        score: 1.4658129805029452
+        tripleKey: tripleKey
+        text: text
+      properties:
+        tripleKey:
+          type: string
+        text:
+          description: "Verbalized cold fact, e.g. subject predicate object"
+          type: string
+        score:
+          type: number
+      required:
+      - score
+      - text
+      - tripleKey
+    queryProject_200_response:
+      example:
+        archivedHits:
+        - score: 1.4658129805029452
+          tripleKey: tripleKey
+          text: text
+        - score: 1.4658129805029452
+          tripleKey: tripleKey
+          text: text
+        triples:
+        - predicate:
+            label: label
+            uri: uri
+          evidence: evidence
+          subject:
+            label: label
+            uri: uri
+          documentId: documentId
+          object:
+            label: label
+            uri: uri
+        - predicate:
+            label: label
+            uri: uri
+          evidence: evidence
+          subject:
+            label: label
+            uri: uri
+          documentId: documentId
+          object:
+            label: label
+            uri: uri
+        answer: answer
+        entities:
+        - score: 6.027456183070403
+          identity:
+            namespaceUri: namespaceUri
+            value: value
+          label: label
+          type: type
+          uri: uri
+          documentIds:
+          - documentIds
+          - documentIds
+        - score: 6.027456183070403
+          identity:
+            namespaceUri: namespaceUri
+            value: value
+          label: label
+          type: type
+          uri: uri
+          documentIds:
+          - documentIds
+          - documentIds
+        contexts:
+        - snippet: snippet
+          score: 0.8008281904610115
+          documentId: documentId
+          id: id
+          source: source
+          title: title
+        - snippet: snippet
+          score: 0.8008281904610115
+          documentId: documentId
+          id: id
+          source: source
+          title: title
+      properties:
+        answer:
+          description: Short extractive answer from the top context. Empty when nothing
+            was retrieved.
+          type: string
+        contexts:
+          items:
+            $ref: "#/components/schemas/queryProject_200_response_contexts_inner"
+          type: array
+        entities:
+          description: Present when include asks for entities or identity
+          items:
+            $ref: "#/components/schemas/queryProject_200_response_entities_inner"
+          type: array
+        triples:
+          description: Present when include asks for triples
+          items:
+            $ref: "#/components/schemas/queryProject_200_response_triples_inner"
+          type: array
+        archivedHits:
+          description: Present when includeArchived was requested on a single project
+          items:
+            $ref: "#/components/schemas/queryProject_200_response_archivedHits_inner"
+          type: array
+      required:
+      - answer
+      - contexts
+    chat_request_history_inner:
+      properties:
+        role:
+          description: Message role
+          enum:
+          - user
+          - assistant
+          type: string
+        content:
+          description: Message content
+          type: string
+      required:
+      - content
+      - role
+    chat_request_options:
+      properties:
+        tier:
+          default: balanced
+          description: Model tier for response quality
+          enum:
+          - fast
+          - balanced
+          - accurate
+          type: string
+    chat_request:
+      properties:
+        message:
+          description: Your question about the knowledge graph
+          minLength: 1
+          type: string
+        history:
+          default: []
+          description: Previous conversation messages for context
+          items:
+            $ref: "#/components/schemas/chat_request_history_inner"
+          type: array
+        options:
+          $ref: "#/components/schemas/chat_request_options"
+      required:
+      - message
+    chat_200_response_data_citations_inner:
+      example:
+        snippet: snippet
+        documentId: documentId
+        source: source
+      properties:
+        documentId:
+          description: Document that grounded the answer
+          type: string
+        source:
+          description: Caller-supplied source id when present
+          type: string
+        snippet:
+          description: Evidence text when the tool returned it
+          type: string
+      required:
+      - documentId
+    chat_200_response_data_toolCalls_inner:
+      example:
+        result: ""
+        input: ""
+        name: name
+      properties:
+        name:
+          type: string
+        input: {}
+        result: {}
+      required:
+      - name
+    chat_200_response_data_usage:
+      example:
+        inputTokens: 0.8008281904610115
+        outputTokens: 6.027456183070403
+        totalTokens: 1.4658129805029452
+      properties:
+        inputTokens:
+          type: number
+        outputTokens:
+          type: number
+        totalTokens:
+          type: number
+    chat_200_response_data_metadata:
+      example:
+        processingTimeMs: 5.962133916683182
+        tierApplied: fast
+      properties:
+        processingTimeMs:
+          type: number
+        tierApplied:
+          enum:
+          - fast
+          - balanced
+          - accurate
+          type: string
+      required:
+      - processingTimeMs
+      - tierApplied
+    chat_200_response_data:
+      example:
+        metadata:
+          processingTimeMs: 5.962133916683182
+          tierApplied: fast
+        citations:
+        - snippet: snippet
+          documentId: documentId
+          source: source
+        - snippet: snippet
+          documentId: documentId
+          source: source
+        response: response
+        usage:
+          inputTokens: 0.8008281904610115
+          outputTokens: 6.027456183070403
+          totalTokens: 1.4658129805029452
+        toolCalls:
+        - result: ""
+          input: ""
+          name: name
+        - result: ""
+          input: ""
+          name: name
+      properties:
+        response:
+          description: The AI's answer to your question
+          type: string
+        citations:
+          description: Documents referenced by graph tools
+          items:
+            $ref: "#/components/schemas/chat_200_response_data_citations_inner"
+          type: array
+        toolCalls:
+          items:
+            $ref: "#/components/schemas/chat_200_response_data_toolCalls_inner"
+          type: array
+        usage:
+          $ref: "#/components/schemas/chat_200_response_data_usage"
+        metadata:
+          $ref: "#/components/schemas/chat_200_response_data_metadata"
+      required:
+      - metadata
+      - response
+    chat_200_response:
+      example:
+        data:
+          metadata:
+            processingTimeMs: 5.962133916683182
+            tierApplied: fast
+          citations:
+          - snippet: snippet
+            documentId: documentId
+            source: source
+          - snippet: snippet
+            documentId: documentId
+            source: source
+          response: response
+          usage:
+            inputTokens: 0.8008281904610115
+            outputTokens: 6.027456183070403
+            totalTokens: 1.4658129805029452
+          toolCalls:
+          - result: ""
+            input: ""
+            name: name
+          - result: ""
+            input: ""
+            name: name
+        success: true
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: "#/components/schemas/chat_200_response_data"
+      required:
+      - data
+      - success
+    chat_401_response_error:
+      example:
+        code: code
+        message: message
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+      required:
+      - message
+    chat_401_response:
+      example:
+        success: true
+        error:
+          code: code
+          message: message
+      properties:
+        success:
+          enum:
+          - false
+          type: boolean
+        error:
+          $ref: "#/components/schemas/chat_401_response_error"
+      required:
+      - error
+      - success
+    getOntologyOverview_200_response_totals:
+      example:
+        triples: 6.027456183070403
+        entities: 0.8008281904610115
+      properties:
+        entities:
+          type: number
+        triples:
+          type: number
+      required:
+      - entities
+      - triples
+    getOntologyOverview_200_response:
+      example:
+        baseVersion: baseVersion
+        overlayVersion: overlayVersion
+        totals:
+          triples: 6.027456183070403
+          entities: 0.8008281904610115
+        version: version
+        projectVersion: projectVersion
+      properties:
+        totals:
+          $ref: "#/components/schemas/getOntologyOverview_200_response_totals"
+        version:
+          type: string
+        baseVersion:
+          type: string
+        projectVersion:
+          nullable: true
+          type: string
+        overlayVersion:
+          nullable: true
+          type: string
+      required:
+      - baseVersion
+      - overlayVersion
+      - projectVersion
+      - totals
+      - version
+    getOntologyOverview_401_response:
+      example:
+        error: error
+      properties:
+        error:
+          type: string
+      required:
+      - error
+    listGraphExports_200_response_exports_inner:
+      example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        createdByName: createdByName
+        assertedCount: 0
+        notes:
+        - notes
+        - notes
+        format: jsonld
+        id: id
+        historyCount: 6
+        expiresAt: 2000-01-23T04:56:07.000+00:00
+        status: queued
+      properties:
+        id:
+          type: string
+        format:
+          enum:
+          - jsonld
+          - nquads
+          type: string
+        status:
+          enum:
+          - queued
+          - running
+          - ready
+          - failed
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        expiresAt:
+          format: date-time
+          type: string
+        createdByName:
+          nullable: true
+          type: string
+        assertedCount:
+          nullable: true
+          type: integer
+        historyCount:
+          nullable: true
+          type: integer
+        notes:
+          items:
+            type: string
+          type: array
+      required:
+      - assertedCount
+      - createdAt
+      - createdByName
+      - expiresAt
+      - format
+      - historyCount
+      - id
+      - notes
+      - status
+    listGraphExports_200_response:
+      example:
+        exports:
+        - createdAt: 2000-01-23T04:56:07.000+00:00
+          createdByName: createdByName
+          assertedCount: 0
+          notes:
+          - notes
+          - notes
+          format: jsonld
+          id: id
+          historyCount: 6
+          expiresAt: 2000-01-23T04:56:07.000+00:00
+          status: queued
+        - createdAt: 2000-01-23T04:56:07.000+00:00
+          createdByName: createdByName
+          assertedCount: 0
+          notes:
+          - notes
+          - notes
+          format: jsonld
+          id: id
+          historyCount: 6
+          expiresAt: 2000-01-23T04:56:07.000+00:00
+          status: queued
+      properties:
+        exports:
+          items:
+            $ref: "#/components/schemas/listGraphExports_200_response_exports_inner"
+          type: array
+      required:
+      - exports
+    createGraphExport_request:
+      properties:
+        format:
+          enum:
+          - jsonld
+          - nquads
+          type: string
+      required:
+      - format
+    EntityRead_entity_identity:
+      example:
+        sourceField: sourceField
+        namespaceUri: namespaceUri
+        sourceValue: sourceValue
+        uri: uri
+        authorityApproved: true
+      properties:
+        uri:
+          nullable: true
+          type: string
+        namespaceUri:
+          nullable: true
+          type: string
+        authorityApproved:
+          nullable: true
+          type: boolean
+        sourceField:
+          nullable: true
+          type: string
+        sourceValue:
+          nullable: true
+          type: string
+      required:
+      - authorityApproved
+      - namespaceUri
+      - sourceField
+      - sourceValue
+      - uri
+    EntityRead_entity:
+      example:
+        aliases:
+        - aliases
+        - aliases
+        homeProjectExternalId: homeProjectExternalId
+        canonicalId: canonicalId
+        identity:
+          sourceField: sourceField
+          namespaceUri: namespaceUri
+          sourceValue: sourceValue
+          uri: uri
+          authorityApproved: true
+        id: id
+        label: label
+        type: type
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
+        aliases:
+          items:
+            type: string
+          type: array
+        canonicalId:
+          nullable: true
+          type: string
+        identity:
+          $ref: "#/components/schemas/EntityRead_entity_identity"
+        homeProjectExternalId:
+          nullable: true
+          type: string
+      required:
+      - aliases
+      - canonicalId
+      - homeProjectExternalId
+      - id
+      - identity
+      - label
+      - type
+    EntityRead_documents_inner_facts_inner_other:
+      example:
+        identityUri: identityUri
+        label: label
+        type: type
+      properties:
+        label:
+          type: string
+        type:
+          type: string
+        identityUri:
+          nullable: true
+          type: string
+      required:
+      - identityUri
+      - label
+      - type
+    EntityRead_documents_inner_facts_inner:
+      example:
+        predicate: predicate
+        other:
+          identityUri: identityUri
+          label: label
+          type: type
+        projectExternalId: projectExternalId
+        direction: outgoing
+        status: ACTIVE
+      properties:
+        direction:
+          enum:
+          - outgoing
+          - incoming
+          type: string
+        predicate:
+          type: string
+        status:
+          enum:
+          - ACTIVE
+          - CONFLICTING
+          - PENDING_ONTOLOGY
+          - RETRACTED
+          - SOURCE_DELETED
+          - SUPERSEDED
+          type: string
+        projectExternalId:
+          nullable: true
+          type: string
+        other:
+          $ref: "#/components/schemas/EntityRead_documents_inner_facts_inner_other"
+      required:
+      - direction
+      - other
+      - predicate
+      - projectExternalId
+      - status
+    EntityRead_documents_inner_literals_inner:
+      example:
+        sourceField: sourceField
+        datatype: BOOLEAN
+        property: property
+        projectExternalId: projectExternalId
+        value: value
+        status: ACTIVE
+      properties:
+        property:
+          type: string
+        value:
+          type: string
+        datatype:
+          enum:
+          - BOOLEAN
+          - DATE
+          - DATE_TIME
+          - DECIMAL
+          - INTEGER
+          - STRING
+          type: string
+        sourceField:
+          type: string
+        status:
+          enum:
+          - ACTIVE
+          - CONFLICTING
+          - PENDING_ONTOLOGY
+          - RETRACTED
+          - SOURCE_DELETED
+          - SUPERSEDED
+          type: string
+        projectExternalId:
+          type: string
+      required:
+      - datatype
+      - projectExternalId
+      - property
+      - sourceField
+      - status
+      - value
+    EntityRead_documents_inner:
+      example:
+        literals:
+        - sourceField: sourceField
+          datatype: BOOLEAN
+          property: property
+          projectExternalId: projectExternalId
+          value: value
+          status: ACTIVE
+        - sourceField: sourceField
+          datatype: BOOLEAN
+          property: property
+          projectExternalId: projectExternalId
+          value: value
+          status: ACTIVE
+        documentId: documentId
+        title: title
+        facts:
+        - predicate: predicate
+          other:
+            identityUri: identityUri
+            label: label
+            type: type
+          projectExternalId: projectExternalId
+          direction: outgoing
+          status: ACTIVE
+        - predicate: predicate
+          other:
+            identityUri: identityUri
+            label: label
+            type: type
+          projectExternalId: projectExternalId
+          direction: outgoing
+          status: ACTIVE
+      properties:
+        documentId:
+          nullable: true
+          type: string
+        title:
+          nullable: true
+          type: string
+        facts:
+          items:
+            $ref: "#/components/schemas/EntityRead_documents_inner_facts_inner"
+          type: array
+        literals:
+          items:
+            $ref: "#/components/schemas/EntityRead_documents_inner_literals_inner"
+          type: array
+      required:
+      - documentId
+      - facts
+      - literals
+      - title
+  securitySchemes:
+    bearerAuth:
+      description: "API key from Security → API tokens. Personal keys start with ygg_.\
+        \ Organization keys start with ygg_org_. A new personal key can read documents\
+        \ and the graph (documents:read, graph:read); choose more scopes when you\
+        \ create it. Send it as Authorization: Bearer <key>."
+      scheme: bearer
+      type: http
+    apiKeyAuth:
+      description: "API key from Security → API tokens. Personal keys start with ygg_.\
+        \ Organization keys start with ygg_org_. A new personal key can read documents\
+        \ and the graph (documents:read, graph:read); choose more scopes when you\
+        \ create it. Send it in the x-api-key header."
+      in: header
+      name: x-api-key
+      type: apiKey
