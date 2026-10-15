@@ -709,7 +709,7 @@ Name | Type | Description  | Notes
 
 ## UploadDocument
 
-> UploadDocument202Response UploadDocument(ctx, projectId).XYggyOrganizationId(xYggyOrganizationId).File(file).Text(text).NoteKind(noteKind).ParentNoteId(parentNoteId).Title(title).Source(source).OriginSystem(originSystem).ProjectId2(projectId2).DesiredTier(desiredTier).InferenceMode(inferenceMode).Execute()
+> UploadDocument202Response UploadDocument(ctx, projectId).XYggyOrganizationId(xYggyOrganizationId).File(file).Text(text).NoteKind(noteKind).ParentNoteId(parentNoteId).ForLinkId(forLinkId).Title(title).Source(source).OriginSystem(originSystem).ProjectId2(projectId2).DesiredTier(desiredTier).InferenceMode(inferenceMode).Execute()
 
 Upload and queue a document for async processing (project-scoped)
 
@@ -734,6 +734,7 @@ func main() {
 	text := "text_example" // string | Plain text or markdown body. Used when no file is uploaded. (optional)
 	noteKind := "noteKind_example" // string | Note kind. When set, the upload is stored on the caller's personal organization. (optional)
 	parentNoteId := "parentNoteId_example" // string | yggy notes: attach the file to this note. The file becomes a document of its own that belongs to the note, and needs a file. (optional)
+	forLinkId := "forLinkId_example" // string | yggy Notes: the link attachment of the same note this file was uploaded for (its audio, for a transcript). Needs parentNoteId. (optional)
 	title := "title_example" // string | Document title (optional)
 	source := "source_example" // string | Source identifier (optional)
 	originSystem := "originSystem_example" // string | Business system the data originates from (optional)
@@ -743,7 +744,7 @@ func main() {
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.DocumentsAPI.UploadDocument(context.Background(), projectId).XYggyOrganizationId(xYggyOrganizationId).File(file).Text(text).NoteKind(noteKind).ParentNoteId(parentNoteId).Title(title).Source(source).OriginSystem(originSystem).ProjectId2(projectId2).DesiredTier(desiredTier).InferenceMode(inferenceMode).Execute()
+	resp, r, err := apiClient.DocumentsAPI.UploadDocument(context.Background(), projectId).XYggyOrganizationId(xYggyOrganizationId).File(file).Text(text).NoteKind(noteKind).ParentNoteId(parentNoteId).ForLinkId(forLinkId).Title(title).Source(source).OriginSystem(originSystem).ProjectId2(projectId2).DesiredTier(desiredTier).InferenceMode(inferenceMode).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `DocumentsAPI.UploadDocument``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -774,6 +775,7 @@ Name | Type | Description  | Notes
  **text** | **string** | Plain text or markdown body. Used when no file is uploaded. | 
  **noteKind** | **string** | Note kind. When set, the upload is stored on the caller&#39;s personal organization. | 
  **parentNoteId** | **string** | yggy notes: attach the file to this note. The file becomes a document of its own that belongs to the note, and needs a file. | 
+ **forLinkId** | **string** | yggy Notes: the link attachment of the same note this file was uploaded for (its audio, for a transcript). Needs parentNoteId. | 
  **title** | **string** | Document title | 
  **source** | **string** | Source identifier | 
  **originSystem** | **string** | Business system the data originates from | 

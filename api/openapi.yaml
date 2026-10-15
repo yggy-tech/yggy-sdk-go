@@ -1748,6 +1748,7 @@ components:
         ownerDisplayName: ownerDisplayName
         tripleCount: 0.8008281904610115
         processingSummary: processingSummary
+        noteKind: noteKind
         contentType: contentType
         updatedAt: updatedAt
         sourceCreatedAt: sourceCreatedAt
@@ -1790,6 +1791,8 @@ components:
           - LINEAR
           - CHAT
           - SEED
+          - LINK
+          - SHARED
           - null
           nullable: true
           type: string
@@ -1827,6 +1830,9 @@ components:
         storageUrl:
           type: string
         deletedAt:
+          type: string
+        noteKind:
+          nullable: true
           type: string
         extractionMethod:
           enum:
@@ -1905,6 +1911,7 @@ components:
           ownerDisplayName: ownerDisplayName
           tripleCount: 0.8008281904610115
           processingSummary: processingSummary
+          noteKind: noteKind
           contentType: contentType
           updatedAt: updatedAt
           sourceCreatedAt: sourceCreatedAt
@@ -1939,6 +1946,7 @@ components:
           ownerDisplayName: ownerDisplayName
           tripleCount: 0.8008281904610115
           processingSummary: processingSummary
+          noteKind: noteKind
           contentType: contentType
           updatedAt: updatedAt
           sourceCreatedAt: sourceCreatedAt
@@ -1995,6 +2003,11 @@ components:
         parentNoteId:
           description: "yggy notes: attach the file to this note. The file becomes\
             \ a document of its own that belongs to the note, and needs a file."
+          pattern: "^[A-Za-z0-9_-]{1,128}$"
+          type: string
+        forLinkId:
+          description: "yggy Notes: the link attachment of the same note this file\
+            \ was uploaded for (its audio, for a transcript). Needs parentNoteId."
           pattern: "^[A-Za-z0-9_-]{1,128}$"
           type: string
         title:

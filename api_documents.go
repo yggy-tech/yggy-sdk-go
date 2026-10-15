@@ -1421,6 +1421,7 @@ type ApiUploadDocumentRequest struct {
 	text *string
 	noteKind *string
 	parentNoteId *string
+	forLinkId *string
 	title *string
 	source *string
 	originSystem *string
@@ -1455,6 +1456,12 @@ func (r ApiUploadDocumentRequest) NoteKind(noteKind string) ApiUploadDocumentReq
 // yggy notes: attach the file to this note. The file becomes a document of its own that belongs to the note, and needs a file.
 func (r ApiUploadDocumentRequest) ParentNoteId(parentNoteId string) ApiUploadDocumentRequest {
 	r.parentNoteId = &parentNoteId
+	return r
+}
+
+// yggy Notes: the link attachment of the same note this file was uploaded for (its audio, for a transcript). Needs parentNoteId.
+func (r ApiUploadDocumentRequest) ForLinkId(forLinkId string) ApiUploadDocumentRequest {
+	r.forLinkId = &forLinkId
 	return r
 }
 
@@ -1583,6 +1590,9 @@ func (a *DocumentsAPIService) UploadDocumentExecute(r ApiUploadDocumentRequest) 
 	}
 	if r.parentNoteId != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "parentNoteId", r.parentNoteId, "", "")
+	}
+	if r.forLinkId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "forLinkId", r.forLinkId, "", "")
 	}
 	if r.title != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "title", r.title, "", "")

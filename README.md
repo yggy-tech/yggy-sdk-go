@@ -12,7 +12,7 @@
 ## Install
 
 ```bash
-go get github.com/yggy-tech/yggy-sdk-go
+go get github.com/yggy-tech/yggy-sdk-go@v0.1.0
 ```
 
 ## Example
