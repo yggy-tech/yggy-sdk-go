@@ -23,6 +23,7 @@ Name | Type | Description | Notes
 **FailureMessage** | Pointer to **string** |  | [optional] 
 **StorageUrl** | Pointer to **string** |  | [optional] 
 **DeletedAt** | Pointer to **string** |  | [optional] 
+**NoteKind** | Pointer to **NullableString** |  | [optional] 
 **ExtractionMethod** | Pointer to **string** |  | [optional] 
 **StructuredRegions** | Pointer to **NullableString** |  | [optional] 
 **ProvenanceChain** | Pointer to **NullableString** |  | [optional] 
@@ -543,6 +544,41 @@ SetDeletedAt sets DeletedAt field to given value.
 
 HasDeletedAt returns a boolean if a field has been set.
 
+### GetNoteKind
+
+`func (o *ListDocuments200ResponseDocumentsInner) GetNoteKind() string`
+
+GetNoteKind returns the NoteKind field if non-nil, zero value otherwise.
+
+### GetNoteKindOk
+
+`func (o *ListDocuments200ResponseDocumentsInner) GetNoteKindOk() (*string, bool)`
+
+GetNoteKindOk returns a tuple with the NoteKind field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetNoteKind
+
+`func (o *ListDocuments200ResponseDocumentsInner) SetNoteKind(v string)`
+
+SetNoteKind sets NoteKind field to given value.
+
+### HasNoteKind
+
+`func (o *ListDocuments200ResponseDocumentsInner) HasNoteKind() bool`
+
+HasNoteKind returns a boolean if a field has been set.
+
+### SetNoteKindNil
+
+`func (o *ListDocuments200ResponseDocumentsInner) SetNoteKindNil(b bool)`
+
+ SetNoteKindNil sets the value for NoteKind to be an explicit nil
+
+### UnsetNoteKind
+`func (o *ListDocuments200ResponseDocumentsInner) UnsetNoteKind()`
+
+UnsetNoteKind ensures that no value is present for NoteKind, not even an explicit nil
 ### GetExtractionMethod
 
 `func (o *ListDocuments200ResponseDocumentsInner) GetExtractionMethod() string`

@@ -41,6 +41,7 @@ type ListDocuments200ResponseDocumentsInner struct {
 	FailureMessage *string `json:"failureMessage,omitempty"`
 	StorageUrl *string `json:"storageUrl,omitempty"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
+	NoteKind NullableString `json:"noteKind,omitempty"`
 	ExtractionMethod *string `json:"extractionMethod,omitempty"`
 	StructuredRegions NullableString `json:"structuredRegions,omitempty"`
 	ProvenanceChain NullableString `json:"provenanceChain,omitempty"`
@@ -681,6 +682,48 @@ func (o *ListDocuments200ResponseDocumentsInner) HasDeletedAt() bool {
 // SetDeletedAt gets a reference to the given string and assigns it to the DeletedAt field.
 func (o *ListDocuments200ResponseDocumentsInner) SetDeletedAt(v string) {
 	o.DeletedAt = &v
+}
+
+// GetNoteKind returns the NoteKind field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListDocuments200ResponseDocumentsInner) GetNoteKind() string {
+	if o == nil || IsNil(o.NoteKind.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.NoteKind.Get()
+}
+
+// GetNoteKindOk returns a tuple with the NoteKind field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListDocuments200ResponseDocumentsInner) GetNoteKindOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.NoteKind.Get(), o.NoteKind.IsSet()
+}
+
+// HasNoteKind returns a boolean if a field has been set.
+func (o *ListDocuments200ResponseDocumentsInner) HasNoteKind() bool {
+	if o != nil && o.NoteKind.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetNoteKind gets a reference to the given NullableString and assigns it to the NoteKind field.
+func (o *ListDocuments200ResponseDocumentsInner) SetNoteKind(v string) {
+	o.NoteKind.Set(&v)
+}
+// SetNoteKindNil sets the value for NoteKind to be an explicit nil
+func (o *ListDocuments200ResponseDocumentsInner) SetNoteKindNil() {
+	o.NoteKind.Set(nil)
+}
+
+// UnsetNoteKind ensures that no value is present for NoteKind, not even an explicit nil
+func (o *ListDocuments200ResponseDocumentsInner) UnsetNoteKind() {
+	o.NoteKind.Unset()
 }
 
 // GetExtractionMethod returns the ExtractionMethod field value if set, zero value otherwise.
@@ -1357,6 +1400,9 @@ func (o ListDocuments200ResponseDocumentsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.DeletedAt) {
 		toSerialize["deletedAt"] = o.DeletedAt
+	}
+	if o.NoteKind.IsSet() {
+		toSerialize["noteKind"] = o.NoteKind.Get()
 	}
 	if !IsNil(o.ExtractionMethod) {
 		toSerialize["extractionMethod"] = o.ExtractionMethod
