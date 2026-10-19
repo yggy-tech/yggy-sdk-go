@@ -56,6 +56,8 @@ type ListDocuments200ResponseDocumentsInner struct {
 	SourceModifiedAt NullableString `json:"sourceModifiedAt,omitempty"`
 	SourceAuthor NullableString `json:"sourceAuthor,omitempty"`
 	SourceMetadata NullableString `json:"sourceMetadata,omitempty"`
+	AttachedTo *ListDocuments200ResponseDocumentsInnerAttachedTo `json:"attachedTo,omitempty"`
+	MailAttachments []ListDocuments200ResponseDocumentsInnerMailAttachmentsInner `json:"mailAttachments,omitempty"`
 	ProjectExternalId NullableString `json:"projectExternalId,omitempty"`
 }
 
@@ -1304,6 +1306,70 @@ func (o *ListDocuments200ResponseDocumentsInner) UnsetSourceMetadata() {
 	o.SourceMetadata.Unset()
 }
 
+// GetAttachedTo returns the AttachedTo field value if set, zero value otherwise.
+func (o *ListDocuments200ResponseDocumentsInner) GetAttachedTo() ListDocuments200ResponseDocumentsInnerAttachedTo {
+	if o == nil || IsNil(o.AttachedTo) {
+		var ret ListDocuments200ResponseDocumentsInnerAttachedTo
+		return ret
+	}
+	return *o.AttachedTo
+}
+
+// GetAttachedToOk returns a tuple with the AttachedTo field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListDocuments200ResponseDocumentsInner) GetAttachedToOk() (*ListDocuments200ResponseDocumentsInnerAttachedTo, bool) {
+	if o == nil || IsNil(o.AttachedTo) {
+		return nil, false
+	}
+	return o.AttachedTo, true
+}
+
+// HasAttachedTo returns a boolean if a field has been set.
+func (o *ListDocuments200ResponseDocumentsInner) HasAttachedTo() bool {
+	if o != nil && !IsNil(o.AttachedTo) {
+		return true
+	}
+
+	return false
+}
+
+// SetAttachedTo gets a reference to the given ListDocuments200ResponseDocumentsInnerAttachedTo and assigns it to the AttachedTo field.
+func (o *ListDocuments200ResponseDocumentsInner) SetAttachedTo(v ListDocuments200ResponseDocumentsInnerAttachedTo) {
+	o.AttachedTo = &v
+}
+
+// GetMailAttachments returns the MailAttachments field value if set, zero value otherwise.
+func (o *ListDocuments200ResponseDocumentsInner) GetMailAttachments() []ListDocuments200ResponseDocumentsInnerMailAttachmentsInner {
+	if o == nil || IsNil(o.MailAttachments) {
+		var ret []ListDocuments200ResponseDocumentsInnerMailAttachmentsInner
+		return ret
+	}
+	return o.MailAttachments
+}
+
+// GetMailAttachmentsOk returns a tuple with the MailAttachments field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListDocuments200ResponseDocumentsInner) GetMailAttachmentsOk() ([]ListDocuments200ResponseDocumentsInnerMailAttachmentsInner, bool) {
+	if o == nil || IsNil(o.MailAttachments) {
+		return nil, false
+	}
+	return o.MailAttachments, true
+}
+
+// HasMailAttachments returns a boolean if a field has been set.
+func (o *ListDocuments200ResponseDocumentsInner) HasMailAttachments() bool {
+	if o != nil && !IsNil(o.MailAttachments) {
+		return true
+	}
+
+	return false
+}
+
+// SetMailAttachments gets a reference to the given []ListDocuments200ResponseDocumentsInnerMailAttachmentsInner and assigns it to the MailAttachments field.
+func (o *ListDocuments200ResponseDocumentsInner) SetMailAttachments(v []ListDocuments200ResponseDocumentsInnerMailAttachmentsInner) {
+	o.MailAttachments = v
+}
+
 // GetProjectExternalId returns the ProjectExternalId field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ListDocuments200ResponseDocumentsInner) GetProjectExternalId() string {
 	if o == nil || IsNil(o.ProjectExternalId.Get()) {
@@ -1445,6 +1511,12 @@ func (o ListDocuments200ResponseDocumentsInner) ToMap() (map[string]interface{},
 	}
 	if o.SourceMetadata.IsSet() {
 		toSerialize["sourceMetadata"] = o.SourceMetadata.Get()
+	}
+	if !IsNil(o.AttachedTo) {
+		toSerialize["attachedTo"] = o.AttachedTo
+	}
+	if !IsNil(o.MailAttachments) {
+		toSerialize["mailAttachments"] = o.MailAttachments
 	}
 	if o.ProjectExternalId.IsSet() {
 		toSerialize["projectExternalId"] = o.ProjectExternalId.Get()

@@ -38,6 +38,8 @@ Name | Type | Description | Notes
 **SourceModifiedAt** | Pointer to **NullableString** |  | [optional] 
 **SourceAuthor** | Pointer to **NullableString** |  | [optional] 
 **SourceMetadata** | Pointer to **NullableString** |  | [optional] 
+**AttachedTo** | Pointer to [**ListDocuments200ResponseDocumentsInnerAttachedTo**](ListDocuments200ResponseDocumentsInnerAttachedTo.md) |  | [optional] 
+**MailAttachments** | Pointer to [**[]ListDocuments200ResponseDocumentsInnerMailAttachmentsInner**](ListDocuments200ResponseDocumentsInnerMailAttachmentsInner.md) |  | [optional] 
 **ProjectExternalId** | Pointer to **NullableString** |  | [optional] 
 
 ## Methods
@@ -1059,6 +1061,56 @@ HasSourceMetadata returns a boolean if a field has been set.
 `func (o *ListDocuments200ResponseDocumentsInner) UnsetSourceMetadata()`
 
 UnsetSourceMetadata ensures that no value is present for SourceMetadata, not even an explicit nil
+### GetAttachedTo
+
+`func (o *ListDocuments200ResponseDocumentsInner) GetAttachedTo() ListDocuments200ResponseDocumentsInnerAttachedTo`
+
+GetAttachedTo returns the AttachedTo field if non-nil, zero value otherwise.
+
+### GetAttachedToOk
+
+`func (o *ListDocuments200ResponseDocumentsInner) GetAttachedToOk() (*ListDocuments200ResponseDocumentsInnerAttachedTo, bool)`
+
+GetAttachedToOk returns a tuple with the AttachedTo field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAttachedTo
+
+`func (o *ListDocuments200ResponseDocumentsInner) SetAttachedTo(v ListDocuments200ResponseDocumentsInnerAttachedTo)`
+
+SetAttachedTo sets AttachedTo field to given value.
+
+### HasAttachedTo
+
+`func (o *ListDocuments200ResponseDocumentsInner) HasAttachedTo() bool`
+
+HasAttachedTo returns a boolean if a field has been set.
+
+### GetMailAttachments
+
+`func (o *ListDocuments200ResponseDocumentsInner) GetMailAttachments() []ListDocuments200ResponseDocumentsInnerMailAttachmentsInner`
+
+GetMailAttachments returns the MailAttachments field if non-nil, zero value otherwise.
+
+### GetMailAttachmentsOk
+
+`func (o *ListDocuments200ResponseDocumentsInner) GetMailAttachmentsOk() (*[]ListDocuments200ResponseDocumentsInnerMailAttachmentsInner, bool)`
+
+GetMailAttachmentsOk returns a tuple with the MailAttachments field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMailAttachments
+
+`func (o *ListDocuments200ResponseDocumentsInner) SetMailAttachments(v []ListDocuments200ResponseDocumentsInnerMailAttachmentsInner)`
+
+SetMailAttachments sets MailAttachments field to given value.
+
+### HasMailAttachments
+
+`func (o *ListDocuments200ResponseDocumentsInner) HasMailAttachments() bool`
+
+HasMailAttachments returns a boolean if a field has been set.
+
 ### GetProjectExternalId
 
 `func (o *ListDocuments200ResponseDocumentsInner) GetProjectExternalId() string`
