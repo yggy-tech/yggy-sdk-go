@@ -1551,6 +1551,7 @@ components:
           - PROJECT_CONFLICT
           - STORAGE_NOT_CONFIGURED
           - BILLING_NOT_CONFIGURED
+          - LICENSE_INACTIVE
           - PLAN_REQUIRED
           - MEMBER_LIMIT_REACHED
           - PROJECT_MEMBERSHIP_JWT_TOO_LARGE
@@ -1565,6 +1566,8 @@ components:
           - API_KEY_NO_PERMISSIONS
           - ORG_KEY_GRAPH_SCOPE_UNAVAILABLE
           - ORG_KEY_TOO_MANY_PROJECTS
+          - SENDER_IS_LOGIN_EMAIL
+          - SENDER_TAKEN
           type: string
         details: {}
       required:
@@ -1731,6 +1734,40 @@ components:
       required:
       - project
       - success
+    listDocuments_200_response_documents_inner_attachedTo:
+      example:
+        documentId: documentId
+        title: title
+      properties:
+        documentId:
+          type: string
+        title:
+          type: string
+      required:
+      - documentId
+      - title
+    listDocuments_200_response_documents_inner_mailAttachments_inner:
+      example:
+        documentId: documentId
+        title: title
+        status: PENDING
+      properties:
+        documentId:
+          type: string
+        title:
+          type: string
+        status:
+          enum:
+          - PENDING
+          - PROCESSING
+          - COMPLETED
+          - FAILED
+          - STORED
+          type: string
+      required:
+      - documentId
+      - status
+      - title
     listDocuments_200_response_documents_inner:
       example:
         ocrStrategy: ocrStrategy
@@ -1739,6 +1776,9 @@ components:
         source: source
         title: title
         error: error
+        attachedTo:
+          documentId: documentId
+          title: title
         sourceMetadata: sourceMetadata
         content: content
         guidanceRecommendations: guidanceRecommendations
@@ -1765,6 +1805,13 @@ components:
         sourceAuthor: sourceAuthor
         projectExternalId: projectExternalId
         extractionGuidanceRevision: 0
+        mailAttachments:
+        - documentId: documentId
+          title: title
+          status: PENDING
+        - documentId: documentId
+          title: title
+          status: PENDING
         failureMessage: failureMessage
         storageUrl: storageUrl
         status: PENDING
@@ -1793,6 +1840,7 @@ components:
           - SEED
           - LINK
           - SHARED
+          - FORWARDED
           - null
           nullable: true
           type: string
@@ -1881,6 +1929,12 @@ components:
         sourceMetadata:
           nullable: true
           type: string
+        attachedTo:
+          $ref: "#/components/schemas/listDocuments_200_response_documents_inner_attachedTo"
+        mailAttachments:
+          items:
+            $ref: "#/components/schemas/listDocuments_200_response_documents_inner_mailAttachments_inner"
+          type: array
         projectExternalId:
           nullable: true
           type: string
@@ -1902,6 +1956,9 @@ components:
           source: source
           title: title
           error: error
+          attachedTo:
+            documentId: documentId
+            title: title
           sourceMetadata: sourceMetadata
           content: content
           guidanceRecommendations: guidanceRecommendations
@@ -1928,6 +1985,13 @@ components:
           sourceAuthor: sourceAuthor
           projectExternalId: projectExternalId
           extractionGuidanceRevision: 0
+          mailAttachments:
+          - documentId: documentId
+            title: title
+            status: PENDING
+          - documentId: documentId
+            title: title
+            status: PENDING
           failureMessage: failureMessage
           storageUrl: storageUrl
           status: PENDING
@@ -1937,6 +2001,9 @@ components:
           source: source
           title: title
           error: error
+          attachedTo:
+            documentId: documentId
+            title: title
           sourceMetadata: sourceMetadata
           content: content
           guidanceRecommendations: guidanceRecommendations
@@ -1963,6 +2030,13 @@ components:
           sourceAuthor: sourceAuthor
           projectExternalId: projectExternalId
           extractionGuidanceRevision: 0
+          mailAttachments:
+          - documentId: documentId
+            title: title
+            status: PENDING
+          - documentId: documentId
+            title: title
+            status: PENDING
           failureMessage: failureMessage
           storageUrl: storageUrl
           status: PENDING
