@@ -34,6 +34,14 @@ type QueryProject200ResponseContextsInner struct {
 	Snippet string `json:"snippet"`
 	// Relative rank from 0 to 1 inside this result set
 	Score float32 `json:"score"`
+	// Your own id for the document, as sent on upload
+	ExternalId *string `json:"externalId,omitempty"`
+	// Business system the data originates from
+	OriginSystem *string `json:"originSystem,omitempty"`
+	// Link to the document in your system
+	WebUrl *string `json:"webUrl,omitempty"`
+	// Your own key-value pairs, as sent on upload. Imported documents carry fields of their source here.
+	Metadata map[string]QueryProject200ResponseContextsInnerMetadataValue `json:"metadata,omitempty"`
 }
 
 type _QueryProject200ResponseContextsInner QueryProject200ResponseContextsInner
@@ -212,6 +220,134 @@ func (o *QueryProject200ResponseContextsInner) SetScore(v float32) {
 	o.Score = v
 }
 
+// GetExternalId returns the ExternalId field value if set, zero value otherwise.
+func (o *QueryProject200ResponseContextsInner) GetExternalId() string {
+	if o == nil || IsNil(o.ExternalId) {
+		var ret string
+		return ret
+	}
+	return *o.ExternalId
+}
+
+// GetExternalIdOk returns a tuple with the ExternalId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryProject200ResponseContextsInner) GetExternalIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ExternalId) {
+		return nil, false
+	}
+	return o.ExternalId, true
+}
+
+// HasExternalId returns a boolean if a field has been set.
+func (o *QueryProject200ResponseContextsInner) HasExternalId() bool {
+	if o != nil && !IsNil(o.ExternalId) {
+		return true
+	}
+
+	return false
+}
+
+// SetExternalId gets a reference to the given string and assigns it to the ExternalId field.
+func (o *QueryProject200ResponseContextsInner) SetExternalId(v string) {
+	o.ExternalId = &v
+}
+
+// GetOriginSystem returns the OriginSystem field value if set, zero value otherwise.
+func (o *QueryProject200ResponseContextsInner) GetOriginSystem() string {
+	if o == nil || IsNil(o.OriginSystem) {
+		var ret string
+		return ret
+	}
+	return *o.OriginSystem
+}
+
+// GetOriginSystemOk returns a tuple with the OriginSystem field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryProject200ResponseContextsInner) GetOriginSystemOk() (*string, bool) {
+	if o == nil || IsNil(o.OriginSystem) {
+		return nil, false
+	}
+	return o.OriginSystem, true
+}
+
+// HasOriginSystem returns a boolean if a field has been set.
+func (o *QueryProject200ResponseContextsInner) HasOriginSystem() bool {
+	if o != nil && !IsNil(o.OriginSystem) {
+		return true
+	}
+
+	return false
+}
+
+// SetOriginSystem gets a reference to the given string and assigns it to the OriginSystem field.
+func (o *QueryProject200ResponseContextsInner) SetOriginSystem(v string) {
+	o.OriginSystem = &v
+}
+
+// GetWebUrl returns the WebUrl field value if set, zero value otherwise.
+func (o *QueryProject200ResponseContextsInner) GetWebUrl() string {
+	if o == nil || IsNil(o.WebUrl) {
+		var ret string
+		return ret
+	}
+	return *o.WebUrl
+}
+
+// GetWebUrlOk returns a tuple with the WebUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryProject200ResponseContextsInner) GetWebUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.WebUrl) {
+		return nil, false
+	}
+	return o.WebUrl, true
+}
+
+// HasWebUrl returns a boolean if a field has been set.
+func (o *QueryProject200ResponseContextsInner) HasWebUrl() bool {
+	if o != nil && !IsNil(o.WebUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetWebUrl gets a reference to the given string and assigns it to the WebUrl field.
+func (o *QueryProject200ResponseContextsInner) SetWebUrl(v string) {
+	o.WebUrl = &v
+}
+
+// GetMetadata returns the Metadata field value if set, zero value otherwise.
+func (o *QueryProject200ResponseContextsInner) GetMetadata() map[string]QueryProject200ResponseContextsInnerMetadataValue {
+	if o == nil || IsNil(o.Metadata) {
+		var ret map[string]QueryProject200ResponseContextsInnerMetadataValue
+		return ret
+	}
+	return o.Metadata
+}
+
+// GetMetadataOk returns a tuple with the Metadata field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryProject200ResponseContextsInner) GetMetadataOk() (map[string]QueryProject200ResponseContextsInnerMetadataValue, bool) {
+	if o == nil || IsNil(o.Metadata) {
+		return map[string]QueryProject200ResponseContextsInnerMetadataValue{}, false
+	}
+	return o.Metadata, true
+}
+
+// HasMetadata returns a boolean if a field has been set.
+func (o *QueryProject200ResponseContextsInner) HasMetadata() bool {
+	if o != nil && !IsNil(o.Metadata) {
+		return true
+	}
+
+	return false
+}
+
+// SetMetadata gets a reference to the given map[string]QueryProject200ResponseContextsInnerMetadataValue and assigns it to the Metadata field.
+func (o *QueryProject200ResponseContextsInner) SetMetadata(v map[string]QueryProject200ResponseContextsInnerMetadataValue) {
+	o.Metadata = v
+}
+
 func (o QueryProject200ResponseContextsInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -230,6 +366,18 @@ func (o QueryProject200ResponseContextsInner) ToMap() (map[string]interface{}, e
 	toSerialize["title"] = o.Title
 	toSerialize["snippet"] = o.Snippet
 	toSerialize["score"] = o.Score
+	if !IsNil(o.ExternalId) {
+		toSerialize["externalId"] = o.ExternalId
+	}
+	if !IsNil(o.OriginSystem) {
+		toSerialize["originSystem"] = o.OriginSystem
+	}
+	if !IsNil(o.WebUrl) {
+		toSerialize["webUrl"] = o.WebUrl
+	}
+	if !IsNil(o.Metadata) {
+		toSerialize["metadata"] = o.Metadata
+	}
 	return toSerialize, nil
 }
 

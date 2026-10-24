@@ -709,7 +709,7 @@ Name | Type | Description  | Notes
 
 ## UploadDocument
 
-> UploadDocument202Response UploadDocument(ctx, projectId).XYggyOrganizationId(xYggyOrganizationId).File(file).Text(text).NoteKind(noteKind).ParentNoteId(parentNoteId).ForLinkId(forLinkId).Title(title).Source(source).OriginSystem(originSystem).ProjectId2(projectId2).DesiredTier(desiredTier).InferenceMode(inferenceMode).Execute()
+> UploadDocument202Response UploadDocument(ctx, projectId).XYggyOrganizationId(xYggyOrganizationId).File(file).Text(text).NoteKind(noteKind).ParentNoteId(parentNoteId).ForLinkId(forLinkId).Title(title).Source(source).OriginSystem(originSystem).ExternalId(externalId).Metadata(metadata).ProjectId2(projectId2).DesiredTier(desiredTier).InferenceMode(inferenceMode).Execute()
 
 Upload and queue a document for async processing (project-scoped)
 
@@ -738,13 +738,15 @@ func main() {
 	title := "title_example" // string | Document title (optional)
 	source := "source_example" // string | Source identifier (optional)
 	originSystem := "originSystem_example" // string | Business system the data originates from (optional)
+	externalId := "externalId_example" // string | Your own id for the document. Returned as externalId in query results and chat citations. (optional)
+	metadata := "metadata_example" // string | JSON object of your own key-value pairs for the document, for example {\\\"region\\\":\\\"EU\\\",\\\"priority\\\":2}. Values are strings, numbers or booleans; at most 50 keys and 8192 bytes. Returned as metadata in query results and chat citations. (optional)
 	projectId2 := "projectId_example" // string | Project ID to bind the document to at upload time (optional)
 	desiredTier := "desiredTier_example" // string | Model tier for extraction. Defaults to auto. (optional)
 	inferenceMode := "inferenceMode_example" // string | Inference routing for extraction. Defaults to org settings. (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.DocumentsAPI.UploadDocument(context.Background(), projectId).XYggyOrganizationId(xYggyOrganizationId).File(file).Text(text).NoteKind(noteKind).ParentNoteId(parentNoteId).ForLinkId(forLinkId).Title(title).Source(source).OriginSystem(originSystem).ProjectId2(projectId2).DesiredTier(desiredTier).InferenceMode(inferenceMode).Execute()
+	resp, r, err := apiClient.DocumentsAPI.UploadDocument(context.Background(), projectId).XYggyOrganizationId(xYggyOrganizationId).File(file).Text(text).NoteKind(noteKind).ParentNoteId(parentNoteId).ForLinkId(forLinkId).Title(title).Source(source).OriginSystem(originSystem).ExternalId(externalId).Metadata(metadata).ProjectId2(projectId2).DesiredTier(desiredTier).InferenceMode(inferenceMode).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `DocumentsAPI.UploadDocument``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -779,6 +781,8 @@ Name | Type | Description  | Notes
  **title** | **string** | Document title | 
  **source** | **string** | Source identifier | 
  **originSystem** | **string** | Business system the data originates from | 
+ **externalId** | **string** | Your own id for the document. Returned as externalId in query results and chat citations. | 
+ **metadata** | **string** | JSON object of your own key-value pairs for the document, for example {\\\&quot;region\\\&quot;:\\\&quot;EU\\\&quot;,\\\&quot;priority\\\&quot;:2}. Values are strings, numbers or booleans; at most 50 keys and 8192 bytes. Returned as metadata in query results and chat citations. | 
  **projectId2** | **string** | Project ID to bind the document to at upload time | 
  **desiredTier** | **string** | Model tier for extraction. Defaults to auto. | 
  **inferenceMode** | **string** | Inference routing for extraction. Defaults to org settings. | 
