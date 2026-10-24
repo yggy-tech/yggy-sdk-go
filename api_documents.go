@@ -1425,6 +1425,8 @@ type ApiUploadDocumentRequest struct {
 	title *string
 	source *string
 	originSystem *string
+	externalId *string
+	metadata *string
 	projectId2 *string
 	desiredTier *string
 	inferenceMode *string
@@ -1480,6 +1482,18 @@ func (r ApiUploadDocumentRequest) Source(source string) ApiUploadDocumentRequest
 // Business system the data originates from
 func (r ApiUploadDocumentRequest) OriginSystem(originSystem string) ApiUploadDocumentRequest {
 	r.originSystem = &originSystem
+	return r
+}
+
+// Your own id for the document. Returned as externalId in query results and chat citations.
+func (r ApiUploadDocumentRequest) ExternalId(externalId string) ApiUploadDocumentRequest {
+	r.externalId = &externalId
+	return r
+}
+
+// JSON object of your own key-value pairs for the document, for example {\\\&quot;region\\\&quot;:\\\&quot;EU\\\&quot;,\\\&quot;priority\\\&quot;:2}. Values are strings, numbers or booleans; at most 50 keys and 8192 bytes. Returned as metadata in query results and chat citations.
+func (r ApiUploadDocumentRequest) Metadata(metadata string) ApiUploadDocumentRequest {
+	r.metadata = &metadata
 	return r
 }
 
@@ -1602,6 +1616,12 @@ func (a *DocumentsAPIService) UploadDocumentExecute(r ApiUploadDocumentRequest) 
 	}
 	if r.originSystem != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "originSystem", r.originSystem, "", "")
+	}
+	if r.externalId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "externalId", r.externalId, "", "")
+	}
+	if r.metadata != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "metadata", r.metadata, "", "")
 	}
 	if r.projectId2 != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "projectId", r.projectId2, "", "")

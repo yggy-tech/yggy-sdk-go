@@ -10,6 +10,10 @@ Name | Type | Description | Notes
 **Title** | **string** | Document title | 
 **Snippet** | **string** | Short passage used for ranking | 
 **Score** | **float32** | Relative rank from 0 to 1 inside this result set | 
+**ExternalId** | Pointer to **string** | Your own id for the document, as sent on upload | [optional] 
+**OriginSystem** | Pointer to **string** | Business system the data originates from | [optional] 
+**WebUrl** | Pointer to **string** | Link to the document in your system | [optional] 
+**Metadata** | Pointer to [**map[string]QueryProject200ResponseContextsInnerMetadataValue**](QueryProject200ResponseContextsInnerMetadataValue.md) | Your own key-value pairs, as sent on upload. Imported documents carry fields of their source here. | [optional] 
 
 ## Methods
 
@@ -154,6 +158,106 @@ and a boolean to check if the value has been set.
 
 SetScore sets Score field to given value.
 
+
+### GetExternalId
+
+`func (o *QueryProject200ResponseContextsInner) GetExternalId() string`
+
+GetExternalId returns the ExternalId field if non-nil, zero value otherwise.
+
+### GetExternalIdOk
+
+`func (o *QueryProject200ResponseContextsInner) GetExternalIdOk() (*string, bool)`
+
+GetExternalIdOk returns a tuple with the ExternalId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExternalId
+
+`func (o *QueryProject200ResponseContextsInner) SetExternalId(v string)`
+
+SetExternalId sets ExternalId field to given value.
+
+### HasExternalId
+
+`func (o *QueryProject200ResponseContextsInner) HasExternalId() bool`
+
+HasExternalId returns a boolean if a field has been set.
+
+### GetOriginSystem
+
+`func (o *QueryProject200ResponseContextsInner) GetOriginSystem() string`
+
+GetOriginSystem returns the OriginSystem field if non-nil, zero value otherwise.
+
+### GetOriginSystemOk
+
+`func (o *QueryProject200ResponseContextsInner) GetOriginSystemOk() (*string, bool)`
+
+GetOriginSystemOk returns a tuple with the OriginSystem field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetOriginSystem
+
+`func (o *QueryProject200ResponseContextsInner) SetOriginSystem(v string)`
+
+SetOriginSystem sets OriginSystem field to given value.
+
+### HasOriginSystem
+
+`func (o *QueryProject200ResponseContextsInner) HasOriginSystem() bool`
+
+HasOriginSystem returns a boolean if a field has been set.
+
+### GetWebUrl
+
+`func (o *QueryProject200ResponseContextsInner) GetWebUrl() string`
+
+GetWebUrl returns the WebUrl field if non-nil, zero value otherwise.
+
+### GetWebUrlOk
+
+`func (o *QueryProject200ResponseContextsInner) GetWebUrlOk() (*string, bool)`
+
+GetWebUrlOk returns a tuple with the WebUrl field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetWebUrl
+
+`func (o *QueryProject200ResponseContextsInner) SetWebUrl(v string)`
+
+SetWebUrl sets WebUrl field to given value.
+
+### HasWebUrl
+
+`func (o *QueryProject200ResponseContextsInner) HasWebUrl() bool`
+
+HasWebUrl returns a boolean if a field has been set.
+
+### GetMetadata
+
+`func (o *QueryProject200ResponseContextsInner) GetMetadata() map[string]QueryProject200ResponseContextsInnerMetadataValue`
+
+GetMetadata returns the Metadata field if non-nil, zero value otherwise.
+
+### GetMetadataOk
+
+`func (o *QueryProject200ResponseContextsInner) GetMetadataOk() (*map[string]QueryProject200ResponseContextsInnerMetadataValue, bool)`
+
+GetMetadataOk returns a tuple with the Metadata field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMetadata
+
+`func (o *QueryProject200ResponseContextsInner) SetMetadata(v map[string]QueryProject200ResponseContextsInnerMetadataValue)`
+
+SetMetadata sets Metadata field to given value.
+
+### HasMetadata
+
+`func (o *QueryProject200ResponseContextsInner) HasMetadata() bool`
+
+HasMetadata returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
