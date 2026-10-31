@@ -5,16 +5,16 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Subject** | [**QueryProject200ResponseTriplesInnerSubject**](QueryProject200ResponseTriplesInnerSubject.md) |  | 
-**Predicate** | [**QueryProject200ResponseTriplesInnerSubject**](QueryProject200ResponseTriplesInnerSubject.md) |  | 
-**Object** | [**QueryProject200ResponseTriplesInnerSubject**](QueryProject200ResponseTriplesInnerSubject.md) |  | 
-**Evidence** | Pointer to **string** | Stored hit text. Omitted when the graph hit has none. | [optional] 
-**DocumentId** | Pointer to **string** |  | [optional] 
+**Predicate** | [**QueryProject200ResponseTriplesInnerPredicate**](QueryProject200ResponseTriplesInnerPredicate.md) |  | 
+**Object** | [**QueryProject200ResponseTriplesInnerObject**](QueryProject200ResponseTriplesInnerObject.md) |  | 
+**Evidence** | Pointer to **string** | Source text for the fact, when yggy stored it | [optional] 
+**DocumentId** | Pointer to **string** | The returned document the fact was extracted from | [optional] 
 
 ## Methods
 
 ### NewQueryProject200ResponseTriplesInner
 
-`func NewQueryProject200ResponseTriplesInner(subject QueryProject200ResponseTriplesInnerSubject, predicate QueryProject200ResponseTriplesInnerSubject, object QueryProject200ResponseTriplesInnerSubject, ) *QueryProject200ResponseTriplesInner`
+`func NewQueryProject200ResponseTriplesInner(subject QueryProject200ResponseTriplesInnerSubject, predicate QueryProject200ResponseTriplesInnerPredicate, object QueryProject200ResponseTriplesInnerObject, ) *QueryProject200ResponseTriplesInner`
 
 NewQueryProject200ResponseTriplesInner instantiates a new QueryProject200ResponseTriplesInner object
 This constructor will assign default values to properties that have it defined,
@@ -51,40 +51,40 @@ SetSubject sets Subject field to given value.
 
 ### GetPredicate
 
-`func (o *QueryProject200ResponseTriplesInner) GetPredicate() QueryProject200ResponseTriplesInnerSubject`
+`func (o *QueryProject200ResponseTriplesInner) GetPredicate() QueryProject200ResponseTriplesInnerPredicate`
 
 GetPredicate returns the Predicate field if non-nil, zero value otherwise.
 
 ### GetPredicateOk
 
-`func (o *QueryProject200ResponseTriplesInner) GetPredicateOk() (*QueryProject200ResponseTriplesInnerSubject, bool)`
+`func (o *QueryProject200ResponseTriplesInner) GetPredicateOk() (*QueryProject200ResponseTriplesInnerPredicate, bool)`
 
 GetPredicateOk returns a tuple with the Predicate field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetPredicate
 
-`func (o *QueryProject200ResponseTriplesInner) SetPredicate(v QueryProject200ResponseTriplesInnerSubject)`
+`func (o *QueryProject200ResponseTriplesInner) SetPredicate(v QueryProject200ResponseTriplesInnerPredicate)`
 
 SetPredicate sets Predicate field to given value.
 
 
 ### GetObject
 
-`func (o *QueryProject200ResponseTriplesInner) GetObject() QueryProject200ResponseTriplesInnerSubject`
+`func (o *QueryProject200ResponseTriplesInner) GetObject() QueryProject200ResponseTriplesInnerObject`
 
 GetObject returns the Object field if non-nil, zero value otherwise.
 
 ### GetObjectOk
 
-`func (o *QueryProject200ResponseTriplesInner) GetObjectOk() (*QueryProject200ResponseTriplesInnerSubject, bool)`
+`func (o *QueryProject200ResponseTriplesInner) GetObjectOk() (*QueryProject200ResponseTriplesInnerObject, bool)`
 
 GetObjectOk returns a tuple with the Object field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObject
 
-`func (o *QueryProject200ResponseTriplesInner) SetObject(v QueryProject200ResponseTriplesInnerSubject)`
+`func (o *QueryProject200ResponseTriplesInner) SetObject(v QueryProject200ResponseTriplesInnerObject)`
 
 SetObject sets Object field to given value.
 

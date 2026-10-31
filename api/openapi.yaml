@@ -35,10 +35,14 @@ paths:
   /api/v1/projects:
     get:
       description: "List projects in the active organization with pagination, search,\
-        \ and sort. Default sort is recentlyViewed (last-viewed desc, falling back\
-        \ to createdAt desc), so a user with no views yet gets creation-time order.\
-        \ name orders by project name. Search is a case-insensitive substring over\
-        \ project name and slug."
+        \ and sort. Organization owners and admins and organization API keys see every\
+        \ shared project. Other members see the projects they are a member of, plus\
+        \ public projects, which come back with isMember false and no counts. Private\
+        \ projects they are not a member of are not listed and not counted in total.\
+        \ Default sort is recentlyViewed (last-viewed desc, falling back to createdAt\
+        \ desc), so a user with no views yet gets creation-time order. name orders\
+        \ by project name. Search is a case-insensitive substring over project name\
+        \ and slug."
       operationId: listProjects
       parameters:
       - description: "Page size, from 1 to 100."
@@ -746,9 +750,12 @@ paths:
       - documents
   /api/v1/projects/{projectId}/query:
     post:
-      description: "Return ranked document contexts for a question in one project.\
-        \ Chat remains the conversational surface. This route is retrieve-only. Add\
-        \ include to attach matching entities, triples, or approved identity."
+      description: "Returns the documents in this project that best answer the question,\
+        \ best first, each with the passage that matches and a relevance score. yggy\
+        \ finds them through the facts it extracted (a fact found by the question\
+        \ leads to the document it came from) and through the document title and text.\
+        \ Add `include` to attach the facts of the returned documents, or the entities\
+        \ they mention. This route retrieves only; for a written answer use chat."
       operationId: queryProject
       parameters:
       - explode: false
@@ -799,14 +806,13 @@ paths:
           description: Project access denied
       security:
       - bearerAuth: []
-      summary: Retrieve ranked documents for a project
+      summary: Find the documents that answer a question in a project
       tags:
       - query
   /api/v1/query:
     post:
-      description: "Return ranked document contexts for a question across every project\
-        \ the caller can access. Same body as the project query, including optional\
-        \ include."
+      description: "Same as the project query, across every project the caller can\
+        \ access. Results from all those projects are ranked together."
       operationId: queryOrganization
       parameters:
       - explode: false
@@ -849,7 +855,7 @@ paths:
           description: Project access denied
       security:
       - bearerAuth: []
-      summary: Retrieve ranked documents across the organization
+      summary: Find the documents that answer a question across the organization
       tags:
       - query
   /api/v1/projects/{projectId}/chat:
@@ -904,6 +910,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/chat_401_response"
           description: Internal server error
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/chat_401_response"
+          description: The answer took longer than the chat budget; try again
       security:
       - bearerAuth: []
       summary: Chat with Knowledge Graph
@@ -1256,6 +1268,7 @@ components:
         documentCount: 0
         entityMergeMode: auto
         color: color
+        visibility: private
         extractionSkip:
         - extractionSkip
         - extractionSkip
@@ -1264,6 +1277,7 @@ components:
         - extractionSkip
         kind: shared
         externalId: externalId
+        isMember: true
         organizationId: organizationId
         createdAt: createdAt
         entityCount: 0
@@ -1299,6 +1313,16 @@ components:
           - shared
           - personal
           type: string
+        visibility:
+          description: "Who in the organization can see that this project exists.\
+            \ `private` (the default): only project members and organization owners\
+            \ and admins. `public`: every organization member sees its name in the\
+            \ project list, but only members can open it. A personal project (My files)\
+            \ is always `private`."
+          enum:
+          - private
+          - public
+          type: string
         extractionPurpose:
           maxLength: 500
           nullable: true
@@ -1328,29 +1352,46 @@ components:
         updatedAt:
           type: string
         documentCount:
+          description: "Documents in the project. Null when `isMember` is false: a\
+            \ public project's numbers are for its members only."
           minimum: 0
+          nullable: true
           type: integer
         tripleCount:
+          description: "Relations (triples) in the project. Null when `isMember` is\
+            \ false: a public project's numbers are for its members only."
           minimum: 0
+          nullable: true
           type: integer
         entityCount:
+          description: "Entities in the project. Null when `isMember` is false: a\
+            \ public project's numbers are for its members only."
           minimum: 0
+          nullable: true
           type: integer
+        isMember:
+          description: "True when the caller can open the project: a project member,\
+            \ an organization owner or admin, or an organization API key. False for\
+            \ a public project the caller is not a member of."
+          type: boolean
       required:
       - color
       - documentCount
       - entityCount
       - id
+      - isMember
       - name
       - organizationId
       - slug
       - tripleCount
+      - visibility
     listProjects_200_response:
       example:
         pinned:
         - documentCount: 0
           entityMergeMode: auto
           color: color
+          visibility: private
           extractionSkip:
           - extractionSkip
           - extractionSkip
@@ -1359,6 +1400,7 @@ components:
           - extractionSkip
           kind: shared
           externalId: externalId
+          isMember: true
           organizationId: organizationId
           createdAt: createdAt
           entityCount: 0
@@ -1378,6 +1420,7 @@ components:
         - documentCount: 0
           entityMergeMode: auto
           color: color
+          visibility: private
           extractionSkip:
           - extractionSkip
           - extractionSkip
@@ -1386,6 +1429,7 @@ components:
           - extractionSkip
           kind: shared
           externalId: externalId
+          isMember: true
           organizationId: organizationId
           createdAt: createdAt
           entityCount: 0
@@ -1407,6 +1451,7 @@ components:
         - documentCount: 0
           entityMergeMode: auto
           color: color
+          visibility: private
           extractionSkip:
           - extractionSkip
           - extractionSkip
@@ -1415,6 +1460,7 @@ components:
           - extractionSkip
           kind: shared
           externalId: externalId
+          isMember: true
           organizationId: organizationId
           createdAt: createdAt
           entityCount: 0
@@ -1434,6 +1480,7 @@ components:
         - documentCount: 0
           entityMergeMode: auto
           color: color
+          visibility: private
           extractionSkip:
           - extractionSkip
           - extractionSkip
@@ -1442,6 +1489,7 @@ components:
           - extractionSkip
           kind: shared
           externalId: externalId
+          isMember: true
           organizationId: organizationId
           createdAt: createdAt
           entityCount: 0
@@ -1465,6 +1513,7 @@ components:
           documentCount: 0
           entityMergeMode: auto
           color: color
+          visibility: private
           extractionSkip:
           - extractionSkip
           - extractionSkip
@@ -1473,6 +1522,7 @@ components:
           - extractionSkip
           kind: shared
           externalId: externalId
+          isMember: true
           organizationId: organizationId
           createdAt: createdAt
           entityCount: 0
@@ -1535,6 +1585,7 @@ components:
           - ORG_REQUIRED
           - FORBIDDEN
           - NOT_FOUND
+          - RUN_DETAILS_OWNER_ONLY
           - CONFLICT
           - PROJECT_DENIED
           - USAGE_LIMIT_EXCEEDED
@@ -1544,13 +1595,20 @@ components:
           - PROVIDER_CONFLICT
           - PROVIDER_CONFIG_INVALID
           - PROVIDER_NOT_CONNECTED
+          - GRANT_MIXED_EVERYONE
+          - GRANT_TARGET_UNKNOWN
+          - RUNNER_UNKNOWN
+          - SCHEMA_NAME_UNKNOWN
           - PROVIDER_RATE_LIMITED
           - PROJECT_MEMBER_USER_NOT_IN_ORG
           - PROJECT_MEMBER_UNKNOWN_ROLE
           - PROJECT_MEMBER_LAST_OWNER
           - PROJECT_CONFLICT
+          - ENTITY_MERGE_CROSS_PROJECT_LINKS
+          - ENTITY_MERGE_CROSS_PROJECT_FORBIDDEN
           - STORAGE_NOT_CONFIGURED
           - BILLING_NOT_CONFIGURED
+          - GOOGLE_PICKER_NOT_CONFIGURED
           - LICENSE_INACTIVE
           - PLAN_REQUIRED
           - MEMBER_LIMIT_REACHED
@@ -1563,11 +1621,44 @@ components:
           - WEBHOOK_DELIVERY_IN_PROGRESS
           - ORG_KEY_PERSONAL_SCOPE
           - API_KEY_PERMISSION_EXCEEDS_ROLE
+          - ROLE_EXCEEDS_CALLER_PERMISSIONS
           - API_KEY_NO_PERMISSIONS
           - ORG_KEY_GRAPH_SCOPE_UNAVAILABLE
           - ORG_KEY_TOO_MANY_PROJECTS
           - SENDER_IS_LOGIN_EMAIL
           - SENDER_TAKEN
+          - RUNNER_AMBIGUOUS_PRINCIPAL
+          - RUNNER_SIGNATURE_MALFORMED
+          - RUNNER_UNAUTHORIZED
+          - RUNNER_LENGTH_REQUIRED
+          - RUNNER_BODY_TOO_LARGE
+          - RUNNER_DIGEST_MISMATCH
+          - RUNNER_UNAVAILABLE
+          - RUNNER_REGISTRATION_TOKEN_INVALID
+          - RUNNER_KEY_REJECTED
+          - RUNNER_KEY_IN_USE
+          - RUNNER_KEY_CHANGED
+          - WRITE_ENDPOINT_INVALID
+          - APPROVER_NOT_MEMBER
+          - WRITE_ORDERS_IN_FLIGHT
+          - WRITE_SYSTEM_INVALID
+          - SYSTEM_HAS_WRITE_TARGETS
+          - FIELD_NOT_WRITABLE
+          - CHANGE_TOO_LARGE
+          - CHANGE_PENDING_FOR_FIELD
+          - NOT_AN_APPROVER
+          - SECOND_APPROVER_REQUIRED
+          - CHANGE_STATE_CHANGED
+          - REFRESH_FIELDS_INCOMPLETE
+          - WRITE_ENDPOINT_IN_USE
+          - APPROVAL_REQUIRES_SESSION
+          - CHANGE_REVISION_STALE
+          - CHANGE_RESULT_FINAL
+          - CHANGESET_NOTHING_TO_EXPORT
+          - CHANGE_EVIDENCE_NOT_IN_PROJECT
+          - CHANGE_PROJECT_NOT_ALLOWED
+          - ORG_WIDE_ACCESS_REQUIRED
+          - WRITE_BACK_AMBIGUOUS_PRINCIPAL
           type: string
         details: {}
       required:
@@ -1623,6 +1714,7 @@ components:
       example:
         entityMergeMode: auto
         color: color
+        visibility: private
         extractionSkip:
         - extractionSkip
         - extractionSkip
@@ -1664,6 +1756,16 @@ components:
           - shared
           - personal
           type: string
+        visibility:
+          description: "Who in the organization can see that this project exists.\
+            \ `private` (the default): only project members and organization owners\
+            \ and admins. `public`: every organization member sees its name in the\
+            \ project list, but only members can open it. A personal project (My files)\
+            \ is always `private`."
+          enum:
+          - private
+          - public
+          type: string
         extractionPurpose:
           maxLength: 500
           nullable: true
@@ -1698,12 +1800,14 @@ components:
       - name
       - organizationId
       - slug
+      - visibility
     createProject_201_response:
       example:
         success: true
         project:
           entityMergeMode: auto
           color: color
+          visibility: private
           extractionSkip:
           - extractionSkip
           - extractionSkip
@@ -1746,6 +1850,36 @@ components:
       required:
       - documentId
       - title
+    listDocuments_200_response_documents_inner_storageLocation_oneOf:
+      example:
+        kind: deployment
+      properties:
+        kind:
+          enum:
+          - deployment
+          type: string
+      required:
+      - kind
+    listDocuments_200_response_documents_inner_storageLocation_oneOf_1:
+      properties:
+        kind:
+          enum:
+          - organization
+          type: string
+        locationId:
+          type: string
+        bucket:
+          nullable: true
+          type: string
+      required:
+      - bucket
+      - kind
+      - locationId
+    listDocuments_200_response_documents_inner_storageLocation:
+      nullable: true
+      oneOf:
+      - $ref: "#/components/schemas/listDocuments_200_response_documents_inner_storageLocation_oneOf"
+      - $ref: "#/components/schemas/listDocuments_200_response_documents_inner_storageLocation_oneOf_1"
     listDocuments_200_response_documents_inner_mailAttachments_inner:
       example:
         documentId: documentId
@@ -1772,7 +1906,10 @@ components:
       example:
         ocrStrategy: ocrStrategy
         code: code
+        failedStage: parse
         extractionStats: extractionStats
+        storageLocation:
+          kind: deployment
         source: source
         title: title
         error: error
@@ -1781,6 +1918,7 @@ components:
           title: title
         sourceMetadata: sourceMetadata
         content: content
+        sourceExternalId: sourceExternalId
         guidanceRecommendations: guidanceRecommendations
         provenanceChain: provenanceChain
         inferenceMode: inferenceMode
@@ -1847,6 +1985,9 @@ components:
         originSystem:
           nullable: true
           type: string
+        sourceExternalId:
+          nullable: true
+          type: string
         ownerExternalId:
           nullable: true
           type: string
@@ -1874,6 +2015,15 @@ components:
         code:
           type: string
         failureMessage:
+          type: string
+        failedStage:
+          enum:
+          - parse
+          - detection
+          - extract
+          - resolve
+          - insert
+          - finalize
           type: string
         storageUrl:
           type: string
@@ -1931,6 +2081,8 @@ components:
           type: string
         attachedTo:
           $ref: "#/components/schemas/listDocuments_200_response_documents_inner_attachedTo"
+        storageLocation:
+          $ref: "#/components/schemas/listDocuments_200_response_documents_inner_storageLocation"
         mailAttachments:
           items:
             $ref: "#/components/schemas/listDocuments_200_response_documents_inner_mailAttachments_inner"
@@ -1952,7 +2104,10 @@ components:
         documents:
         - ocrStrategy: ocrStrategy
           code: code
+          failedStage: parse
           extractionStats: extractionStats
+          storageLocation:
+            kind: deployment
           source: source
           title: title
           error: error
@@ -1961,6 +2116,7 @@ components:
             title: title
           sourceMetadata: sourceMetadata
           content: content
+          sourceExternalId: sourceExternalId
           guidanceRecommendations: guidanceRecommendations
           provenanceChain: provenanceChain
           inferenceMode: inferenceMode
@@ -1997,7 +2153,10 @@ components:
           status: PENDING
         - ocrStrategy: ocrStrategy
           code: code
+          failedStage: parse
           extractionStats: extractionStats
+          storageLocation:
+            kind: deployment
           source: source
           title: title
           error: error
@@ -2006,6 +2165,7 @@ components:
             title: title
           sourceMetadata: sourceMetadata
           content: content
+          sourceExternalId: sourceExternalId
           guidanceRecommendations: guidanceRecommendations
           provenanceChain: provenanceChain
           inferenceMode: inferenceMode
@@ -2064,7 +2224,9 @@ components:
           format: binary
           type: string
         text:
-          description: Plain text or markdown body. Used when no file is uploaded.
+          description: "Plain text or markdown body. Used when no file is uploaded:\
+            \ it is processed like an uploaded markdown file. With noteKind it becomes\
+            \ a yggy note instead."
           type: string
         noteKind:
           description: "Note kind. When set, the upload is stored on the caller's\
@@ -2094,6 +2256,19 @@ components:
           description: Business system the data originates from
           maxLength: 80
           type: string
+        externalId:
+          description: Your own id for the document. Returned as externalId in query
+            results and chat citations.
+          maxLength: 500
+          minLength: 1
+          type: string
+        metadata:
+          description: "JSON object of your own key-value pairs for the document,\
+            \ for example {\"region\":\"EU\",\"priority\":2}. Values are strings,\
+            \ numbers or booleans; at most 50 keys and 8192 bytes. Returned as metadata\
+            \ in query results and chat citations."
+          maxLength: 16384
+          type: string
         projectId:
           description: Project ID to bind the document to at upload time
           type: string
@@ -2112,6 +2287,13 @@ components:
           - cloud
           - self-hosted
           - hybrid
+          type: string
+        onboarding:
+          description: First-run onboarding request; the server decides whether the
+            free first batch applies.
+          enum:
+          - "true"
+          - "false"
           type: string
     uploadDocument_202_response:
       example:
@@ -2186,6 +2368,7 @@ components:
         current: 2.027123023002322
         total: 4.145608029883936
         unit: unit
+        waitedForCapacity: true
         name: name
         startedAt: 7.061401241503109
         id: id
@@ -2220,6 +2403,8 @@ components:
           type: number
         unit:
           type: string
+        waitedForCapacity:
+          type: boolean
       required:
       - id
       - name
@@ -2249,6 +2434,7 @@ components:
           current: 2.027123023002322
           total: 4.145608029883936
           unit: unit
+          waitedForCapacity: true
           name: name
           startedAt: 7.061401241503109
           id: id
@@ -2259,6 +2445,7 @@ components:
           current: 2.027123023002322
           total: 4.145608029883936
           unit: unit
+          waitedForCapacity: true
           name: name
           startedAt: 7.061401241503109
           id: id
@@ -2272,6 +2459,7 @@ components:
           current: 2.027123023002322
           total: 4.145608029883936
           unit: unit
+          waitedForCapacity: true
           name: name
           startedAt: 7.061401241503109
           id: id
@@ -2282,6 +2470,7 @@ components:
           current: 2.027123023002322
           total: 4.145608029883936
           unit: unit
+          waitedForCapacity: true
           name: name
           startedAt: 7.061401241503109
           id: id
@@ -2597,73 +2786,98 @@ components:
       - status
       - success
     queryProject_request:
+      example:
+        question: What is the status of CW-1046?
+        topK: 3
+        include:
+        - facts
       properties:
         question:
-          description: Natural-language question to retrieve documents for
+          description: The question in plain language. yggy finds the documents that
+            answer it.
           maxLength: 2000
           minLength: 1
           type: string
         topK:
           default: 5
-          description: Maximum number of ranked contexts to return
+          description: "How many documents to return, best first."
           maximum: 20
           minimum: 1
           type: integer
         mode:
           default: hybrid
-          description: hybrid combines document text with graph matches; lexical uses
-            document text only; graph uses graph matches only
+          description: How documents are found and ranked. `hybrid` (default) uses
+            the facts yggy extracted and the document text; `lexical` uses the document
+            text only; `graph` returns only documents the extracted facts point to.
           enum:
           - hybrid
           - lexical
           - graph
           type: string
         include:
-          description: Optional graph fields to attach. Omit for the default retrieve
-            body. identity alone returns only entities with an approved identity.
+          description: "Extra knowledge to attach to the answer. `facts` (also accepted\
+            \ as `triples`) adds the facts extracted from the returned documents;\
+            \ `entities` adds the people, organizations and things they mention; `identity`\
+            \ adds only entities with an approved identity, such as a register number."
           items:
             enum:
             - entities
             - triples
             - identity
+            - facts
             type: string
-          maxItems: 3
+          maxItems: 4
           type: array
         includeArchived:
           default: false
-          description: Also search cold triples. Archived hits surface separately
-            and trigger a background promote. Single-project scope only.
+          description: Also search archived facts. They are returned in `archivedHits`
+            and brought back into the live graph in the background. Project queries
+            only.
           type: boolean
       required:
       - question
+    queryProject_200_response_contexts_inner_metadata_value:
+      anyOf:
+      - type: string
+      - type: number
+      - type: boolean
     queryProject_200_response_contexts_inner:
-      example:
-        snippet: snippet
-        score: 0.8008281904610115
-        documentId: documentId
-        id: id
-        source: source
-        title: title
       properties:
         id:
-          description: "Stable context id: source slug when present, otherwise the\
-            \ document id"
+          description: "Stable id of the result: the document's `source` when it has\
+            \ one, otherwise its id"
           type: string
         documentId:
-          description: Document id
+          description: yggy document id
           type: string
         source:
-          description: Caller-supplied source id when the document has one
+          description: "The `source` you set on upload, when the document has one"
           type: string
         title:
           description: Document title
           type: string
         snippet:
-          description: Short passage used for ranking
+          description: "The passage of the document that best matches the question,\
+            \ up to 400 characters. The title when yggy has no text for the document."
           type: string
         score:
-          description: Relative rank from 0 to 1 inside this result set
+          description: "Relevance from 0 to 1, relative to the best document in this\
+            \ response"
           type: number
+        externalId:
+          description: "Your own id for the document, as sent on upload"
+          type: string
+        originSystem:
+          description: Business system the data originates from
+          type: string
+        webUrl:
+          description: Link to the document in your system
+          type: string
+        metadata:
+          additionalProperties:
+            $ref: "#/components/schemas/queryProject_200_response_contexts_inner_metadata_value"
+          description: "Your own key-value pairs, as sent on upload. Imported documents\
+            \ carry fields of their source here."
       required:
       - documentId
       - id
@@ -2671,9 +2885,6 @@ components:
       - snippet
       - title
     queryProject_200_response_entities_inner_identity:
-      example:
-        namespaceUri: namespaceUri
-        value: value
       properties:
         namespaceUri:
           description: "Approved identity namespace, for example a Wikidata entity\
@@ -2686,17 +2897,6 @@ components:
       - namespaceUri
       - value
     queryProject_200_response_entities_inner:
-      example:
-        score: 6.027456183070403
-        identity:
-          namespaceUri: namespaceUri
-          value: value
-        label: label
-        type: type
-        uri: uri
-        documentIds:
-        - documentIds
-        - documentIds
       properties:
         uri:
           description: Public entity URI. Never a graph uid.
@@ -2720,9 +2920,27 @@ components:
       - label
       - score
     queryProject_200_response_triples_inner_subject:
-      example:
-        label: label
-        uri: uri
+      description: What the fact is about
+      properties:
+        uri:
+          description: Public HTTPS URI when one is stored
+          type: string
+        label:
+          type: string
+      required:
+      - label
+    queryProject_200_response_triples_inner_predicate:
+      description: "The relation, for example `has_status`"
+      properties:
+        uri:
+          description: Public HTTPS URI when one is stored
+          type: string
+        label:
+          type: string
+      required:
+      - label
+    queryProject_200_response_triples_inner_object:
+      description: The value or the related entity
       properties:
         uri:
           description: Public HTTPS URI when one is stored
@@ -2732,39 +2950,25 @@ components:
       required:
       - label
     queryProject_200_response_triples_inner:
-      example:
-        predicate:
-          label: label
-          uri: uri
-        evidence: evidence
-        subject:
-          label: label
-          uri: uri
-        documentId: documentId
-        object:
-          label: label
-          uri: uri
+      description: "A fact yggy extracted: subject, relation, object"
       properties:
         subject:
           $ref: "#/components/schemas/queryProject_200_response_triples_inner_subject"
         predicate:
-          $ref: "#/components/schemas/queryProject_200_response_triples_inner_subject"
+          $ref: "#/components/schemas/queryProject_200_response_triples_inner_predicate"
         object:
-          $ref: "#/components/schemas/queryProject_200_response_triples_inner_subject"
+          $ref: "#/components/schemas/queryProject_200_response_triples_inner_object"
         evidence:
-          description: Stored hit text. Omitted when the graph hit has none.
+          description: "Source text for the fact, when yggy stored it"
           type: string
         documentId:
+          description: The returned document the fact was extracted from
           type: string
       required:
       - object
       - predicate
       - subject
     queryProject_200_response_archivedHits_inner:
-      example:
-        score: 1.4658129805029452
-        tripleKey: tripleKey
-        text: text
       properties:
         tripleKey:
           type: string
@@ -2779,87 +2983,42 @@ components:
       - tripleKey
     queryProject_200_response:
       example:
-        archivedHits:
-        - score: 1.4658129805029452
-          tripleKey: tripleKey
-          text: text
-        - score: 1.4658129805029452
-          tripleKey: tripleKey
-          text: text
-        triples:
-        - predicate:
-            label: label
-            uri: uri
-          evidence: evidence
-          subject:
-            label: label
-            uri: uri
-          documentId: documentId
-          object:
-            label: label
-            uri: uri
-        - predicate:
-            label: label
-            uri: uri
-          evidence: evidence
-          subject:
-            label: label
-            uri: uri
-          documentId: documentId
-          object:
-            label: label
-            uri: uri
-        answer: answer
-        entities:
-        - score: 6.027456183070403
-          identity:
-            namespaceUri: namespaceUri
-            value: value
-          label: label
-          type: type
-          uri: uri
-          documentIds:
-          - documentIds
-          - documentIds
-        - score: 6.027456183070403
-          identity:
-            namespaceUri: namespaceUri
-            value: value
-          label: label
-          type: type
-          uri: uri
-          documentIds:
-          - documentIds
-          - documentIds
+        answer: "Status: In Progress."
         contexts:
-        - snippet: snippet
-          score: 0.8008281904610115
-          documentId: documentId
-          id: id
-          source: source
-          title: title
-        - snippet: snippet
-          score: 0.8008281904610115
-          documentId: documentId
-          id: id
-          source: source
-          title: title
+        - id: jira:CW-1046
+          documentId: 9f3c1a2e-4b7d-4e11-9c22-0a1b2c3d4e5f
+          source: jira:CW-1046
+          title: "CW-1046: Claims export dropping the last page"
+          snippet: "Status: In Progress. Assignee: Mara Klein. Priority: High."
+          score: 1
+          externalId: CW-1046
+          originSystem: Jira
+        triples:
+        - subject:
+            label: CW-1046
+          predicate:
+            label: has_status
+          object:
+            label: In Progress
+          documentId: 9f3c1a2e-4b7d-4e11-9c22-0a1b2c3d4e5f
       properties:
         answer:
-          description: Short extractive answer from the top context. Empty when nothing
-            was retrieved.
+          description: The sentence from the best document that answers the question.
+            Empty when nothing matched.
           type: string
         contexts:
+          description: "The documents that answer the question, best first"
           items:
             $ref: "#/components/schemas/queryProject_200_response_contexts_inner"
           type: array
         entities:
-          description: Present when include asks for entities or identity
+          description: Present when `include` asks for entities or identity
           items:
             $ref: "#/components/schemas/queryProject_200_response_entities_inner"
           type: array
         triples:
-          description: Present when include asks for triples
+          description: The facts of the returned documents. Present when `include`
+            asks for facts (or triples).
           items:
             $ref: "#/components/schemas/queryProject_200_response_triples_inner"
           type: array
@@ -2914,6 +3073,11 @@ components:
     chat_200_response_data_citations_inner:
       example:
         snippet: snippet
+        metadata:
+          key: queryProject_200_response_contexts_inner_metadata_value
+        originSystem: originSystem
+        webUrl: webUrl
+        externalId: externalId
         documentId: documentId
         source: source
       properties:
@@ -2926,6 +3090,20 @@ components:
         snippet:
           description: Evidence text when the tool returned it
           type: string
+        externalId:
+          description: "Your own id for the document, as sent on upload"
+          type: string
+        originSystem:
+          description: Business system the data originates from
+          type: string
+        webUrl:
+          description: Link to the document in your system
+          type: string
+        metadata:
+          additionalProperties:
+            $ref: "#/components/schemas/queryProject_200_response_contexts_inner_metadata_value"
+          description: "Your own key-value pairs, as sent on upload. Imported documents\
+            \ carry fields of their source here."
       required:
       - documentId
     chat_200_response_data_toolCalls_inner:
@@ -2975,9 +3153,19 @@ components:
           tierApplied: fast
         citations:
         - snippet: snippet
+          metadata:
+            key: queryProject_200_response_contexts_inner_metadata_value
+          originSystem: originSystem
+          webUrl: webUrl
+          externalId: externalId
           documentId: documentId
           source: source
         - snippet: snippet
+          metadata:
+            key: queryProject_200_response_contexts_inner_metadata_value
+          originSystem: originSystem
+          webUrl: webUrl
+          externalId: externalId
           documentId: documentId
           source: source
         response: response
@@ -3020,9 +3208,19 @@ components:
             tierApplied: fast
           citations:
           - snippet: snippet
+            metadata:
+              key: queryProject_200_response_contexts_inner_metadata_value
+            originSystem: originSystem
+            webUrl: webUrl
+            externalId: externalId
             documentId: documentId
             source: source
           - snippet: snippet
+            metadata:
+              key: queryProject_200_response_contexts_inner_metadata_value
+            originSystem: originSystem
+            webUrl: webUrl
+            externalId: externalId
             documentId: documentId
             source: source
           response: response
@@ -3444,17 +3642,27 @@ components:
       - title
   securitySchemes:
     bearerAuth:
-      description: "API key from Security → API tokens. Personal keys start with ygg_.\
-        \ Organization keys start with ygg_org_. A new personal key can read documents\
-        \ and the graph (documents:read, graph:read); choose more scopes when you\
-        \ create it. Send it as Authorization: Bearer <key>."
+      description: "A personal key from Developers → API keys or an organization key\
+        \ from Security → API keys. Personal keys start with ygg_. Organization keys\
+        \ start with ygg_org_. A new personal key can read documents and the graph\
+        \ (documents:read, graph:read); choose more scopes when you create it. Send\
+        \ it as Authorization: Bearer <key>."
       scheme: bearer
       type: http
     apiKeyAuth:
-      description: "API key from Security → API tokens. Personal keys start with ygg_.\
-        \ Organization keys start with ygg_org_. A new personal key can read documents\
-        \ and the graph (documents:read, graph:read); choose more scopes when you\
-        \ create it. Send it in the x-api-key header."
+      description: "A personal key from Developers → API keys or an organization key\
+        \ from Security → API keys. Personal keys start with ygg_. Organization keys\
+        \ start with ygg_org_. A new personal key can read documents and the graph\
+        \ (documents:read, graph:read); choose more scopes when you create it. Send\
+        \ it in the x-api-key header."
       in: header
       name: x-api-key
+      type: apiKey
+    writeBackSignature:
+      description: "`t=<unix seconds>,v1=<hex HMAC-SHA256 of <t>.<raw body>>`, signed\
+        \ with the signing secret of the write-back endpoint that received the write\
+        \ order. Only the write-back result callback takes it, and it takes nothing\
+        \ else."
+      in: header
+      name: yggy-signature
       type: apiKey

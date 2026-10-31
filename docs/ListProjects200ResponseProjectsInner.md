@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **OrganizationId** | **string** |  | 
 **ExternalId** | Pointer to **NullableString** |  | [optional] 
 **Kind** | Pointer to **string** |  | [optional] 
+**Visibility** | **string** | Who in the organization can see that this project exists. &#x60;private&#x60; (the default): only project members and organization owners and admins. &#x60;public&#x60;: every organization member sees its name in the project list, but only members can open it. A personal project (My files) is always &#x60;private&#x60;. | 
 **ExtractionPurpose** | Pointer to **NullableString** |  | [optional] 
 **ExtractionInclude** | Pointer to **[]string** |  | [optional] 
 **ExtractionSkip** | Pointer to **[]string** |  | [optional] 
@@ -18,15 +19,16 @@ Name | Type | Description | Notes
 **EntityMergeMode** | Pointer to **string** |  | [optional] 
 **CreatedAt** | Pointer to **string** |  | [optional] 
 **UpdatedAt** | Pointer to **string** |  | [optional] 
-**DocumentCount** | **int32** |  | 
-**TripleCount** | **int32** |  | 
-**EntityCount** | **int32** |  | 
+**DocumentCount** | **NullableInt32** | Documents in the project. Null when &#x60;isMember&#x60; is false: a public project&#39;s numbers are for its members only. | 
+**TripleCount** | **NullableInt32** | Relations (triples) in the project. Null when &#x60;isMember&#x60; is false: a public project&#39;s numbers are for its members only. | 
+**EntityCount** | **NullableInt32** | Entities in the project. Null when &#x60;isMember&#x60; is false: a public project&#39;s numbers are for its members only. | 
+**IsMember** | **bool** | True when the caller can open the project: a project member, an organization owner or admin, or an organization API key. False for a public project the caller is not a member of. | 
 
 ## Methods
 
 ### NewListProjects200ResponseProjectsInner
 
-`func NewListProjects200ResponseProjectsInner(id string, slug string, name string, color string, organizationId string, documentCount int32, tripleCount int32, entityCount int32, ) *ListProjects200ResponseProjectsInner`
+`func NewListProjects200ResponseProjectsInner(id string, slug string, name string, color string, organizationId string, visibility string, documentCount NullableInt32, tripleCount NullableInt32, entityCount NullableInt32, isMember bool, ) *ListProjects200ResponseProjectsInner`
 
 NewListProjects200ResponseProjectsInner instantiates a new ListProjects200ResponseProjectsInner object
 This constructor will assign default values to properties that have it defined,
@@ -200,6 +202,26 @@ SetKind sets Kind field to given value.
 `func (o *ListProjects200ResponseProjectsInner) HasKind() bool`
 
 HasKind returns a boolean if a field has been set.
+
+### GetVisibility
+
+`func (o *ListProjects200ResponseProjectsInner) GetVisibility() string`
+
+GetVisibility returns the Visibility field if non-nil, zero value otherwise.
+
+### GetVisibilityOk
+
+`func (o *ListProjects200ResponseProjectsInner) GetVisibilityOk() (*string, bool)`
+
+GetVisibilityOk returns a tuple with the Visibility field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVisibility
+
+`func (o *ListProjects200ResponseProjectsInner) SetVisibility(v string)`
+
+SetVisibility sets Visibility field to given value.
+
 
 ### GetExtractionPurpose
 
@@ -406,6 +428,16 @@ and a boolean to check if the value has been set.
 SetDocumentCount sets DocumentCount field to given value.
 
 
+### SetDocumentCountNil
+
+`func (o *ListProjects200ResponseProjectsInner) SetDocumentCountNil(b bool)`
+
+ SetDocumentCountNil sets the value for DocumentCount to be an explicit nil
+
+### UnsetDocumentCount
+`func (o *ListProjects200ResponseProjectsInner) UnsetDocumentCount()`
+
+UnsetDocumentCount ensures that no value is present for DocumentCount, not even an explicit nil
 ### GetTripleCount
 
 `func (o *ListProjects200ResponseProjectsInner) GetTripleCount() int32`
@@ -426,6 +458,16 @@ and a boolean to check if the value has been set.
 SetTripleCount sets TripleCount field to given value.
 
 
+### SetTripleCountNil
+
+`func (o *ListProjects200ResponseProjectsInner) SetTripleCountNil(b bool)`
+
+ SetTripleCountNil sets the value for TripleCount to be an explicit nil
+
+### UnsetTripleCount
+`func (o *ListProjects200ResponseProjectsInner) UnsetTripleCount()`
+
+UnsetTripleCount ensures that no value is present for TripleCount, not even an explicit nil
 ### GetEntityCount
 
 `func (o *ListProjects200ResponseProjectsInner) GetEntityCount() int32`
@@ -444,6 +486,36 @@ and a boolean to check if the value has been set.
 `func (o *ListProjects200ResponseProjectsInner) SetEntityCount(v int32)`
 
 SetEntityCount sets EntityCount field to given value.
+
+
+### SetEntityCountNil
+
+`func (o *ListProjects200ResponseProjectsInner) SetEntityCountNil(b bool)`
+
+ SetEntityCountNil sets the value for EntityCount to be an explicit nil
+
+### UnsetEntityCount
+`func (o *ListProjects200ResponseProjectsInner) UnsetEntityCount()`
+
+UnsetEntityCount ensures that no value is present for EntityCount, not even an explicit nil
+### GetIsMember
+
+`func (o *ListProjects200ResponseProjectsInner) GetIsMember() bool`
+
+GetIsMember returns the IsMember field if non-nil, zero value otherwise.
+
+### GetIsMemberOk
+
+`func (o *ListProjects200ResponseProjectsInner) GetIsMemberOk() (*bool, bool)`
+
+GetIsMemberOk returns a tuple with the IsMember field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsMember
+
+`func (o *ListProjects200ResponseProjectsInner) SetIsMember(v bool)`
+
+SetIsMember sets IsMember field to given value.
 
 
 

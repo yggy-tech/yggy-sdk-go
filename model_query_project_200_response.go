@@ -22,12 +22,13 @@ var _ MappedNullable = &QueryProject200Response{}
 
 // QueryProject200Response struct for QueryProject200Response
 type QueryProject200Response struct {
-	// Short extractive answer from the top context. Empty when nothing was retrieved.
+	// The sentence from the best document that answers the question. Empty when nothing matched.
 	Answer string `json:"answer"`
+	// The documents that answer the question, best first
 	Contexts []QueryProject200ResponseContextsInner `json:"contexts"`
-	// Present when include asks for entities or identity
+	// Present when `include` asks for entities or identity
 	Entities []QueryProject200ResponseEntitiesInner `json:"entities,omitempty"`
-	// Present when include asks for triples
+	// The facts of the returned documents. Present when `include` asks for facts (or triples).
 	Triples []QueryProject200ResponseTriplesInner `json:"triples,omitempty"`
 	// Present when includeArchived was requested on a single project
 	ArchivedHits []QueryProject200ResponseArchivedHitsInner `json:"archivedHits,omitempty"`

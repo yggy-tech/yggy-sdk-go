@@ -22,15 +22,15 @@ var _ MappedNullable = &QueryProjectRequest{}
 
 // QueryProjectRequest struct for QueryProjectRequest
 type QueryProjectRequest struct {
-	// Natural-language question to retrieve documents for
+	// The question in plain language. yggy finds the documents that answer it.
 	Question string `json:"question"`
-	// Maximum number of ranked contexts to return
+	// How many documents to return, best first.
 	TopK *int32 `json:"topK,omitempty"`
-	// hybrid combines document text with graph matches; lexical uses document text only; graph uses graph matches only
+	// How documents are found and ranked. `hybrid` (default) uses the facts yggy extracted and the document text; `lexical` uses the document text only; `graph` returns only documents the extracted facts point to.
 	Mode *string `json:"mode,omitempty"`
-	// Optional graph fields to attach. Omit for the default retrieve body. identity alone returns only entities with an approved identity.
+	// Extra knowledge to attach to the answer. `facts` (also accepted as `triples`) adds the facts extracted from the returned documents; `entities` adds the people, organizations and things they mention; `identity` adds only entities with an approved identity, such as a register number.
 	Include []string `json:"include,omitempty"`
-	// Also search cold triples. Archived hits surface separately and trigger a background promote. Single-project scope only.
+	// Also search archived facts. They are returned in `archivedHits` and brought back into the live graph in the background. Project queries only.
 	IncludeArchived *bool `json:"includeArchived,omitempty"`
 }
 

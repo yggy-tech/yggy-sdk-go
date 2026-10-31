@@ -46,9 +46,9 @@ func (r ApiQueryOrganizationRequest) Execute() (*QueryProject200Response, *http.
 }
 
 /*
-QueryOrganization Retrieve ranked documents across the organization
+QueryOrganization Find the documents that answer a question across the organization
 
-Return ranked document contexts for a question across every project the caller can access. Same body as the project query, including optional include.
+Same as the project query, across every project the caller can access. Results from all those projects are ranked together.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiQueryOrganizationRequest
@@ -195,9 +195,9 @@ func (r ApiQueryProjectRequest) Execute() (*QueryProject200Response, *http.Respo
 }
 
 /*
-QueryProject Retrieve ranked documents for a project
+QueryProject Find the documents that answer a question in a project
 
-Return ranked document contexts for a question in one project. Chat remains the conversational surface. This route is retrieve-only. Add include to attach matching entities, triples, or approved identity.
+Returns the documents in this project that best answer the question, best first, each with the passage that matches and a relevance score. yggy finds them through the facts it extracted (a fact found by the question leads to the document it came from) and through the document title and text. Add `include` to attach the facts of the returned documents, or the entities they mention. This route retrieves only; for a written answer use chat.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param projectId
