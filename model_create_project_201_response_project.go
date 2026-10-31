@@ -29,6 +29,8 @@ type CreateProject201ResponseProject struct {
 	OrganizationId string `json:"organizationId"`
 	ExternalId NullableString `json:"externalId,omitempty"`
 	Kind *string `json:"kind,omitempty"`
+	// Who in the organization can see that this project exists. `private` (the default): only project members and organization owners and admins. `public`: every organization member sees its name in the project list, but only members can open it. A personal project (My files) is always `private`.
+	Visibility string `json:"visibility"`
 	ExtractionPurpose NullableString `json:"extractionPurpose,omitempty"`
 	ExtractionInclude []string `json:"extractionInclude,omitempty"`
 	ExtractionSkip []string `json:"extractionSkip,omitempty"`
@@ -44,13 +46,14 @@ type _CreateProject201ResponseProject CreateProject201ResponseProject
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateProject201ResponseProject(id string, slug string, name string, color string, organizationId string) *CreateProject201ResponseProject {
+func NewCreateProject201ResponseProject(id string, slug string, name string, color string, organizationId string, visibility string) *CreateProject201ResponseProject {
 	this := CreateProject201ResponseProject{}
 	this.Id = id
 	this.Slug = slug
 	this.Name = name
 	this.Color = color
 	this.OrganizationId = organizationId
+	this.Visibility = visibility
 	return &this
 }
 
@@ -254,6 +257,30 @@ func (o *CreateProject201ResponseProject) HasKind() bool {
 // SetKind gets a reference to the given string and assigns it to the Kind field.
 func (o *CreateProject201ResponseProject) SetKind(v string) {
 	o.Kind = &v
+}
+
+// GetVisibility returns the Visibility field value
+func (o *CreateProject201ResponseProject) GetVisibility() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Visibility
+}
+
+// GetVisibilityOk returns a tuple with the Visibility field value
+// and a boolean to check if the value has been set.
+func (o *CreateProject201ResponseProject) GetVisibilityOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Visibility, true
+}
+
+// SetVisibility sets field value
+func (o *CreateProject201ResponseProject) SetVisibility(v string) {
+	o.Visibility = v
 }
 
 // GetExtractionPurpose returns the ExtractionPurpose field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -511,6 +538,7 @@ func (o CreateProject201ResponseProject) ToMap() (map[string]interface{}, error)
 	if !IsNil(o.Kind) {
 		toSerialize["kind"] = o.Kind
 	}
+	toSerialize["visibility"] = o.Visibility
 	if o.ExtractionPurpose.IsSet() {
 		toSerialize["extractionPurpose"] = o.ExtractionPurpose.Get()
 	}
@@ -545,6 +573,7 @@ func (o *CreateProject201ResponseProject) UnmarshalJSON(data []byte) (err error)
 		"name",
 		"color",
 		"organizationId",
+		"visibility",
 	}
 
 	allProperties := make(map[string]interface{})

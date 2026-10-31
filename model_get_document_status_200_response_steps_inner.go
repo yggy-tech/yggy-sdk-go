@@ -32,6 +32,7 @@ type GetDocumentStatus200ResponseStepsInner struct {
 	Current *float32 `json:"current,omitempty"`
 	Total *float32 `json:"total,omitempty"`
 	Unit *string `json:"unit,omitempty"`
+	WaitedForCapacity *bool `json:"waitedForCapacity,omitempty"`
 }
 
 type _GetDocumentStatus200ResponseStepsInner GetDocumentStatus200ResponseStepsInner
@@ -352,6 +353,38 @@ func (o *GetDocumentStatus200ResponseStepsInner) SetUnit(v string) {
 	o.Unit = &v
 }
 
+// GetWaitedForCapacity returns the WaitedForCapacity field value if set, zero value otherwise.
+func (o *GetDocumentStatus200ResponseStepsInner) GetWaitedForCapacity() bool {
+	if o == nil || IsNil(o.WaitedForCapacity) {
+		var ret bool
+		return ret
+	}
+	return *o.WaitedForCapacity
+}
+
+// GetWaitedForCapacityOk returns a tuple with the WaitedForCapacity field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetDocumentStatus200ResponseStepsInner) GetWaitedForCapacityOk() (*bool, bool) {
+	if o == nil || IsNil(o.WaitedForCapacity) {
+		return nil, false
+	}
+	return o.WaitedForCapacity, true
+}
+
+// HasWaitedForCapacity returns a boolean if a field has been set.
+func (o *GetDocumentStatus200ResponseStepsInner) HasWaitedForCapacity() bool {
+	if o != nil && !IsNil(o.WaitedForCapacity) {
+		return true
+	}
+
+	return false
+}
+
+// SetWaitedForCapacity gets a reference to the given bool and assigns it to the WaitedForCapacity field.
+func (o *GetDocumentStatus200ResponseStepsInner) SetWaitedForCapacity(v bool) {
+	o.WaitedForCapacity = &v
+}
+
 func (o GetDocumentStatus200ResponseStepsInner) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -385,6 +418,9 @@ func (o GetDocumentStatus200ResponseStepsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.Unit) {
 		toSerialize["unit"] = o.Unit
+	}
+	if !IsNil(o.WaitedForCapacity) {
+		toSerialize["waitedForCapacity"] = o.WaitedForCapacity
 	}
 	return toSerialize, nil
 }
