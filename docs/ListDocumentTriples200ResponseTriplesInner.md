@@ -12,6 +12,8 @@ Name | Type | Description | Notes
 **SubjectId** | Pointer to **string** |  | [optional] 
 **SubjectType** | Pointer to **string** |  | [optional] 
 **SubjectIdentityUri** | Pointer to **string** |  | [optional] 
+**SubjectStatus** | Pointer to **string** |  | [optional] 
+**ObjectStatus** | Pointer to **string** |  | [optional] 
 **ObjectId** | Pointer to **string** |  | [optional] 
 **ObjectType** | Pointer to **string** |  | [optional] 
 **ObjectIdentityUri** | Pointer to **string** |  | [optional] 
@@ -227,6 +229,56 @@ SetSubjectIdentityUri sets SubjectIdentityUri field to given value.
 `func (o *ListDocumentTriples200ResponseTriplesInner) HasSubjectIdentityUri() bool`
 
 HasSubjectIdentityUri returns a boolean if a field has been set.
+
+### GetSubjectStatus
+
+`func (o *ListDocumentTriples200ResponseTriplesInner) GetSubjectStatus() string`
+
+GetSubjectStatus returns the SubjectStatus field if non-nil, zero value otherwise.
+
+### GetSubjectStatusOk
+
+`func (o *ListDocumentTriples200ResponseTriplesInner) GetSubjectStatusOk() (*string, bool)`
+
+GetSubjectStatusOk returns a tuple with the SubjectStatus field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSubjectStatus
+
+`func (o *ListDocumentTriples200ResponseTriplesInner) SetSubjectStatus(v string)`
+
+SetSubjectStatus sets SubjectStatus field to given value.
+
+### HasSubjectStatus
+
+`func (o *ListDocumentTriples200ResponseTriplesInner) HasSubjectStatus() bool`
+
+HasSubjectStatus returns a boolean if a field has been set.
+
+### GetObjectStatus
+
+`func (o *ListDocumentTriples200ResponseTriplesInner) GetObjectStatus() string`
+
+GetObjectStatus returns the ObjectStatus field if non-nil, zero value otherwise.
+
+### GetObjectStatusOk
+
+`func (o *ListDocumentTriples200ResponseTriplesInner) GetObjectStatusOk() (*string, bool)`
+
+GetObjectStatusOk returns a tuple with the ObjectStatus field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetObjectStatus
+
+`func (o *ListDocumentTriples200ResponseTriplesInner) SetObjectStatus(v string)`
+
+SetObjectStatus sets ObjectStatus field to given value.
+
+### HasObjectStatus
+
+`func (o *ListDocumentTriples200ResponseTriplesInner) HasObjectStatus() bool`
+
+HasObjectStatus returns a boolean if a field has been set.
 
 ### GetObjectId
 
