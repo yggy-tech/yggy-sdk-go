@@ -20,7 +20,7 @@ import (
 // checks if the QueryProject200ResponseTriplesInnerSubject type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &QueryProject200ResponseTriplesInnerSubject{}
 
-// QueryProject200ResponseTriplesInnerSubject struct for QueryProject200ResponseTriplesInnerSubject
+// QueryProject200ResponseTriplesInnerSubject What the fact is about
 type QueryProject200ResponseTriplesInnerSubject struct {
 	// Public HTTPS URI when one is stored
 	Uri *string `json:"uri,omitempty"`

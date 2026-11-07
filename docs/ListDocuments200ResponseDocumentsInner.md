@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **Source** | Pointer to **string** |  | [optional] 
 **SourceKind** | Pointer to **NullableString** |  | [optional] 
 **OriginSystem** | Pointer to **NullableString** |  | [optional] 
+**SourceExternalId** | Pointer to **NullableString** |  | [optional] 
 **OwnerExternalId** | Pointer to **NullableString** |  | [optional] 
 **OwnerDisplayName** | Pointer to **NullableString** |  | [optional] 
 **ContentType** | **string** |  | 
@@ -21,6 +22,7 @@ Name | Type | Description | Notes
 **Error** | Pointer to **string** |  | [optional] 
 **Code** | Pointer to **string** |  | [optional] 
 **FailureMessage** | Pointer to **string** |  | [optional] 
+**FailedStage** | Pointer to **string** |  | [optional] 
 **StorageUrl** | Pointer to **string** |  | [optional] 
 **DeletedAt** | Pointer to **string** |  | [optional] 
 **NoteKind** | Pointer to **NullableString** |  | [optional] 
@@ -39,6 +41,7 @@ Name | Type | Description | Notes
 **SourceAuthor** | Pointer to **NullableString** |  | [optional] 
 **SourceMetadata** | Pointer to **NullableString** |  | [optional] 
 **AttachedTo** | Pointer to [**ListDocuments200ResponseDocumentsInnerAttachedTo**](ListDocuments200ResponseDocumentsInnerAttachedTo.md) |  | [optional] 
+**StorageLocation** | Pointer to [**NullableListDocuments200ResponseDocumentsInnerStorageLocation**](ListDocuments200ResponseDocumentsInnerStorageLocation.md) |  | [optional] 
 **MailAttachments** | Pointer to [**[]ListDocuments200ResponseDocumentsInnerMailAttachmentsInner**](ListDocuments200ResponseDocumentsInnerMailAttachmentsInner.md) |  | [optional] 
 **ProjectExternalId** | Pointer to **NullableString** |  | [optional] 
 
@@ -246,6 +249,41 @@ HasOriginSystem returns a boolean if a field has been set.
 `func (o *ListDocuments200ResponseDocumentsInner) UnsetOriginSystem()`
 
 UnsetOriginSystem ensures that no value is present for OriginSystem, not even an explicit nil
+### GetSourceExternalId
+
+`func (o *ListDocuments200ResponseDocumentsInner) GetSourceExternalId() string`
+
+GetSourceExternalId returns the SourceExternalId field if non-nil, zero value otherwise.
+
+### GetSourceExternalIdOk
+
+`func (o *ListDocuments200ResponseDocumentsInner) GetSourceExternalIdOk() (*string, bool)`
+
+GetSourceExternalIdOk returns a tuple with the SourceExternalId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSourceExternalId
+
+`func (o *ListDocuments200ResponseDocumentsInner) SetSourceExternalId(v string)`
+
+SetSourceExternalId sets SourceExternalId field to given value.
+
+### HasSourceExternalId
+
+`func (o *ListDocuments200ResponseDocumentsInner) HasSourceExternalId() bool`
+
+HasSourceExternalId returns a boolean if a field has been set.
+
+### SetSourceExternalIdNil
+
+`func (o *ListDocuments200ResponseDocumentsInner) SetSourceExternalIdNil(b bool)`
+
+ SetSourceExternalIdNil sets the value for SourceExternalId to be an explicit nil
+
+### UnsetSourceExternalId
+`func (o *ListDocuments200ResponseDocumentsInner) UnsetSourceExternalId()`
+
+UnsetSourceExternalId ensures that no value is present for SourceExternalId, not even an explicit nil
 ### GetOwnerExternalId
 
 `func (o *ListDocuments200ResponseDocumentsInner) GetOwnerExternalId() string`
@@ -495,6 +533,31 @@ SetFailureMessage sets FailureMessage field to given value.
 `func (o *ListDocuments200ResponseDocumentsInner) HasFailureMessage() bool`
 
 HasFailureMessage returns a boolean if a field has been set.
+
+### GetFailedStage
+
+`func (o *ListDocuments200ResponseDocumentsInner) GetFailedStage() string`
+
+GetFailedStage returns the FailedStage field if non-nil, zero value otherwise.
+
+### GetFailedStageOk
+
+`func (o *ListDocuments200ResponseDocumentsInner) GetFailedStageOk() (*string, bool)`
+
+GetFailedStageOk returns a tuple with the FailedStage field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFailedStage
+
+`func (o *ListDocuments200ResponseDocumentsInner) SetFailedStage(v string)`
+
+SetFailedStage sets FailedStage field to given value.
+
+### HasFailedStage
+
+`func (o *ListDocuments200ResponseDocumentsInner) HasFailedStage() bool`
+
+HasFailedStage returns a boolean if a field has been set.
 
 ### GetStorageUrl
 
@@ -1086,6 +1149,41 @@ SetAttachedTo sets AttachedTo field to given value.
 
 HasAttachedTo returns a boolean if a field has been set.
 
+### GetStorageLocation
+
+`func (o *ListDocuments200ResponseDocumentsInner) GetStorageLocation() ListDocuments200ResponseDocumentsInnerStorageLocation`
+
+GetStorageLocation returns the StorageLocation field if non-nil, zero value otherwise.
+
+### GetStorageLocationOk
+
+`func (o *ListDocuments200ResponseDocumentsInner) GetStorageLocationOk() (*ListDocuments200ResponseDocumentsInnerStorageLocation, bool)`
+
+GetStorageLocationOk returns a tuple with the StorageLocation field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetStorageLocation
+
+`func (o *ListDocuments200ResponseDocumentsInner) SetStorageLocation(v ListDocuments200ResponseDocumentsInnerStorageLocation)`
+
+SetStorageLocation sets StorageLocation field to given value.
+
+### HasStorageLocation
+
+`func (o *ListDocuments200ResponseDocumentsInner) HasStorageLocation() bool`
+
+HasStorageLocation returns a boolean if a field has been set.
+
+### SetStorageLocationNil
+
+`func (o *ListDocuments200ResponseDocumentsInner) SetStorageLocationNil(b bool)`
+
+ SetStorageLocationNil sets the value for StorageLocation to be an explicit nil
+
+### UnsetStorageLocation
+`func (o *ListDocuments200ResponseDocumentsInner) UnsetStorageLocation()`
+
+UnsetStorageLocation ensures that no value is present for StorageLocation, not even an explicit nil
 ### GetMailAttachments
 
 `func (o *ListDocuments200ResponseDocumentsInner) GetMailAttachments() []ListDocuments200ResponseDocumentsInnerMailAttachmentsInner`

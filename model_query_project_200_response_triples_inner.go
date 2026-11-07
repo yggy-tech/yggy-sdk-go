@@ -20,13 +20,16 @@ import (
 // checks if the QueryProject200ResponseTriplesInner type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &QueryProject200ResponseTriplesInner{}
 
-// QueryProject200ResponseTriplesInner struct for QueryProject200ResponseTriplesInner
+// QueryProject200ResponseTriplesInner A fact yggy extracted: subject, relation, object
 type QueryProject200ResponseTriplesInner struct {
 	Subject QueryProject200ResponseTriplesInnerSubject `json:"subject"`
-	Predicate QueryProject200ResponseTriplesInnerSubject `json:"predicate"`
-	Object QueryProject200ResponseTriplesInnerSubject `json:"object"`
-	// Stored hit text. Omitted when the graph hit has none.
+	Predicate QueryProject200ResponseTriplesInnerPredicate `json:"predicate"`
+	Object QueryProject200ResponseTriplesInnerObject `json:"object"`
+	// Source text for the fact, when yggy stored it
 	Evidence *string `json:"evidence,omitempty"`
+	// For a measured value: what it measures and the conditions it held under, e.g. `time to first token; provider Google`
+	Measures *string `json:"measures,omitempty"`
+	// The returned document the fact was extracted from
 	DocumentId *string `json:"documentId,omitempty"`
 }
 
@@ -36,7 +39,7 @@ type _QueryProject200ResponseTriplesInner QueryProject200ResponseTriplesInner
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewQueryProject200ResponseTriplesInner(subject QueryProject200ResponseTriplesInnerSubject, predicate QueryProject200ResponseTriplesInnerSubject, object QueryProject200ResponseTriplesInnerSubject) *QueryProject200ResponseTriplesInner {
+func NewQueryProject200ResponseTriplesInner(subject QueryProject200ResponseTriplesInnerSubject, predicate QueryProject200ResponseTriplesInnerPredicate, object QueryProject200ResponseTriplesInnerObject) *QueryProject200ResponseTriplesInner {
 	this := QueryProject200ResponseTriplesInner{}
 	this.Subject = subject
 	this.Predicate = predicate
@@ -77,9 +80,9 @@ func (o *QueryProject200ResponseTriplesInner) SetSubject(v QueryProject200Respon
 }
 
 // GetPredicate returns the Predicate field value
-func (o *QueryProject200ResponseTriplesInner) GetPredicate() QueryProject200ResponseTriplesInnerSubject {
+func (o *QueryProject200ResponseTriplesInner) GetPredicate() QueryProject200ResponseTriplesInnerPredicate {
 	if o == nil {
-		var ret QueryProject200ResponseTriplesInnerSubject
+		var ret QueryProject200ResponseTriplesInnerPredicate
 		return ret
 	}
 
@@ -88,7 +91,7 @@ func (o *QueryProject200ResponseTriplesInner) GetPredicate() QueryProject200Resp
 
 // GetPredicateOk returns a tuple with the Predicate field value
 // and a boolean to check if the value has been set.
-func (o *QueryProject200ResponseTriplesInner) GetPredicateOk() (*QueryProject200ResponseTriplesInnerSubject, bool) {
+func (o *QueryProject200ResponseTriplesInner) GetPredicateOk() (*QueryProject200ResponseTriplesInnerPredicate, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -96,14 +99,14 @@ func (o *QueryProject200ResponseTriplesInner) GetPredicateOk() (*QueryProject200
 }
 
 // SetPredicate sets field value
-func (o *QueryProject200ResponseTriplesInner) SetPredicate(v QueryProject200ResponseTriplesInnerSubject) {
+func (o *QueryProject200ResponseTriplesInner) SetPredicate(v QueryProject200ResponseTriplesInnerPredicate) {
 	o.Predicate = v
 }
 
 // GetObject returns the Object field value
-func (o *QueryProject200ResponseTriplesInner) GetObject() QueryProject200ResponseTriplesInnerSubject {
+func (o *QueryProject200ResponseTriplesInner) GetObject() QueryProject200ResponseTriplesInnerObject {
 	if o == nil {
-		var ret QueryProject200ResponseTriplesInnerSubject
+		var ret QueryProject200ResponseTriplesInnerObject
 		return ret
 	}
 
@@ -112,7 +115,7 @@ func (o *QueryProject200ResponseTriplesInner) GetObject() QueryProject200Respons
 
 // GetObjectOk returns a tuple with the Object field value
 // and a boolean to check if the value has been set.
-func (o *QueryProject200ResponseTriplesInner) GetObjectOk() (*QueryProject200ResponseTriplesInnerSubject, bool) {
+func (o *QueryProject200ResponseTriplesInner) GetObjectOk() (*QueryProject200ResponseTriplesInnerObject, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -120,7 +123,7 @@ func (o *QueryProject200ResponseTriplesInner) GetObjectOk() (*QueryProject200Res
 }
 
 // SetObject sets field value
-func (o *QueryProject200ResponseTriplesInner) SetObject(v QueryProject200ResponseTriplesInnerSubject) {
+func (o *QueryProject200ResponseTriplesInner) SetObject(v QueryProject200ResponseTriplesInnerObject) {
 	o.Object = v
 }
 
@@ -154,6 +157,38 @@ func (o *QueryProject200ResponseTriplesInner) HasEvidence() bool {
 // SetEvidence gets a reference to the given string and assigns it to the Evidence field.
 func (o *QueryProject200ResponseTriplesInner) SetEvidence(v string) {
 	o.Evidence = &v
+}
+
+// GetMeasures returns the Measures field value if set, zero value otherwise.
+func (o *QueryProject200ResponseTriplesInner) GetMeasures() string {
+	if o == nil || IsNil(o.Measures) {
+		var ret string
+		return ret
+	}
+	return *o.Measures
+}
+
+// GetMeasuresOk returns a tuple with the Measures field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryProject200ResponseTriplesInner) GetMeasuresOk() (*string, bool) {
+	if o == nil || IsNil(o.Measures) {
+		return nil, false
+	}
+	return o.Measures, true
+}
+
+// HasMeasures returns a boolean if a field has been set.
+func (o *QueryProject200ResponseTriplesInner) HasMeasures() bool {
+	if o != nil && !IsNil(o.Measures) {
+		return true
+	}
+
+	return false
+}
+
+// SetMeasures gets a reference to the given string and assigns it to the Measures field.
+func (o *QueryProject200ResponseTriplesInner) SetMeasures(v string) {
+	o.Measures = &v
 }
 
 // GetDocumentId returns the DocumentId field value if set, zero value otherwise.
@@ -203,6 +238,9 @@ func (o QueryProject200ResponseTriplesInner) ToMap() (map[string]interface{}, er
 	toSerialize["object"] = o.Object
 	if !IsNil(o.Evidence) {
 		toSerialize["evidence"] = o.Evidence
+	}
+	if !IsNil(o.Measures) {
+		toSerialize["measures"] = o.Measures
 	}
 	if !IsNil(o.DocumentId) {
 		toSerialize["documentId"] = o.DocumentId

@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **Current** | Pointer to **float32** |  | [optional] 
 **Total** | Pointer to **float32** |  | [optional] 
 **Unit** | Pointer to **string** |  | [optional] 
+**WaitedForCapacity** | Pointer to **bool** |  | [optional] 
 
 ## Methods
 
@@ -268,6 +269,31 @@ SetUnit sets Unit field to given value.
 `func (o *GetDocumentStatus200ResponseStepsInner) HasUnit() bool`
 
 HasUnit returns a boolean if a field has been set.
+
+### GetWaitedForCapacity
+
+`func (o *GetDocumentStatus200ResponseStepsInner) GetWaitedForCapacity() bool`
+
+GetWaitedForCapacity returns the WaitedForCapacity field if non-nil, zero value otherwise.
+
+### GetWaitedForCapacityOk
+
+`func (o *GetDocumentStatus200ResponseStepsInner) GetWaitedForCapacityOk() (*bool, bool)`
+
+GetWaitedForCapacityOk returns a tuple with the WaitedForCapacity field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetWaitedForCapacity
+
+`func (o *GetDocumentStatus200ResponseStepsInner) SetWaitedForCapacity(v bool)`
+
+SetWaitedForCapacity sets WaitedForCapacity field to given value.
+
+### HasWaitedForCapacity
+
+`func (o *GetDocumentStatus200ResponseStepsInner) HasWaitedForCapacity() bool`
+
+HasWaitedForCapacity returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

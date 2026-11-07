@@ -1425,9 +1425,12 @@ type ApiUploadDocumentRequest struct {
 	title *string
 	source *string
 	originSystem *string
+	externalId *string
+	metadata *string
 	projectId2 *string
 	desiredTier *string
 	inferenceMode *string
+	onboarding *string
 }
 
 func (r ApiUploadDocumentRequest) XYggyOrganizationId(xYggyOrganizationId string) ApiUploadDocumentRequest {
@@ -1441,7 +1444,7 @@ func (r ApiUploadDocumentRequest) File(file *os.File) ApiUploadDocumentRequest {
 	return r
 }
 
-// Plain text or markdown body. Used when no file is uploaded.
+// Plain text or markdown body. Used when no file is uploaded: it is processed like an uploaded markdown file. With noteKind it becomes a yggy note instead.
 func (r ApiUploadDocumentRequest) Text(text string) ApiUploadDocumentRequest {
 	r.text = &text
 	return r
@@ -1483,6 +1486,18 @@ func (r ApiUploadDocumentRequest) OriginSystem(originSystem string) ApiUploadDoc
 	return r
 }
 
+// Your own id for the document. Returned as externalId in query results and chat citations.
+func (r ApiUploadDocumentRequest) ExternalId(externalId string) ApiUploadDocumentRequest {
+	r.externalId = &externalId
+	return r
+}
+
+// JSON object of your own key-value pairs for the document, for example {\\\&quot;region\\\&quot;:\\\&quot;EU\\\&quot;,\\\&quot;priority\\\&quot;:2}. Values are strings, numbers or booleans; at most 50 keys and 8192 bytes. Returned as metadata in query results and chat citations.
+func (r ApiUploadDocumentRequest) Metadata(metadata string) ApiUploadDocumentRequest {
+	r.metadata = &metadata
+	return r
+}
+
 // Project ID to bind the document to at upload time
 func (r ApiUploadDocumentRequest) ProjectId2(projectId2 string) ApiUploadDocumentRequest {
 	r.projectId2 = &projectId2
@@ -1498,6 +1513,12 @@ func (r ApiUploadDocumentRequest) DesiredTier(desiredTier string) ApiUploadDocum
 // Inference routing for extraction. Defaults to org settings.
 func (r ApiUploadDocumentRequest) InferenceMode(inferenceMode string) ApiUploadDocumentRequest {
 	r.inferenceMode = &inferenceMode
+	return r
+}
+
+// First-run onboarding request; the server decides whether the free first batch applies.
+func (r ApiUploadDocumentRequest) Onboarding(onboarding string) ApiUploadDocumentRequest {
+	r.onboarding = &onboarding
 	return r
 }
 
@@ -1603,6 +1624,12 @@ func (a *DocumentsAPIService) UploadDocumentExecute(r ApiUploadDocumentRequest) 
 	if r.originSystem != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "originSystem", r.originSystem, "", "")
 	}
+	if r.externalId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "externalId", r.externalId, "", "")
+	}
+	if r.metadata != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "metadata", r.metadata, "", "")
+	}
 	if r.projectId2 != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "projectId", r.projectId2, "", "")
 	}
@@ -1611,6 +1638,9 @@ func (a *DocumentsAPIService) UploadDocumentExecute(r ApiUploadDocumentRequest) 
 	}
 	if r.inferenceMode != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "inferenceMode", r.inferenceMode, "", "")
+	}
+	if r.onboarding != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "onboarding", r.onboarding, "", "")
 	}
 	if r.ctx != nil {
 		// API Key Authentication
