@@ -40,6 +40,7 @@ type GetDocumentStatus200Response struct {
 	WorkflowError *string `json:"workflowError,omitempty"`
 	Retryable *bool `json:"retryable,omitempty"`
 	TriplesExtracted *float32 `json:"triplesExtracted,omitempty"`
+	Outcome *string `json:"outcome,omitempty"`
 	InputTokens *float32 `json:"inputTokens,omitempty"`
 	OutputTokens *float32 `json:"outputTokens,omitempty"`
 	ExtractionTier *string `json:"extractionTier,omitempty"`
@@ -619,6 +620,38 @@ func (o *GetDocumentStatus200Response) SetTriplesExtracted(v float32) {
 	o.TriplesExtracted = &v
 }
 
+// GetOutcome returns the Outcome field value if set, zero value otherwise.
+func (o *GetDocumentStatus200Response) GetOutcome() string {
+	if o == nil || IsNil(o.Outcome) {
+		var ret string
+		return ret
+	}
+	return *o.Outcome
+}
+
+// GetOutcomeOk returns a tuple with the Outcome field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GetDocumentStatus200Response) GetOutcomeOk() (*string, bool) {
+	if o == nil || IsNil(o.Outcome) {
+		return nil, false
+	}
+	return o.Outcome, true
+}
+
+// HasOutcome returns a boolean if a field has been set.
+func (o *GetDocumentStatus200Response) HasOutcome() bool {
+	if o != nil && !IsNil(o.Outcome) {
+		return true
+	}
+
+	return false
+}
+
+// SetOutcome gets a reference to the given string and assigns it to the Outcome field.
+func (o *GetDocumentStatus200Response) SetOutcome(v string) {
+	o.Outcome = &v
+}
+
 // GetInputTokens returns the InputTokens field value if set, zero value otherwise.
 func (o *GetDocumentStatus200Response) GetInputTokens() float32 {
 	if o == nil || IsNil(o.InputTokens) {
@@ -954,6 +987,9 @@ func (o GetDocumentStatus200Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.TriplesExtracted) {
 		toSerialize["triplesExtracted"] = o.TriplesExtracted
+	}
+	if !IsNil(o.Outcome) {
+		toSerialize["outcome"] = o.Outcome
 	}
 	if !IsNil(o.InputTokens) {
 		toSerialize["inputTokens"] = o.InputTokens

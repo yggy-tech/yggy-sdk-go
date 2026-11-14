@@ -4,11 +4,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Question** | **string** | Natural-language question to retrieve documents for | 
-**TopK** | Pointer to **int32** | Maximum number of ranked contexts to return | [optional] [default to 5]
-**Mode** | Pointer to **string** | hybrid combines document text with graph matches; lexical uses document text only; graph uses graph matches only | [optional] [default to "hybrid"]
-**Include** | Pointer to **[]string** | Optional graph fields to attach. Omit for the default retrieve body. identity alone returns only entities with an approved identity. | [optional] 
-**IncludeArchived** | Pointer to **bool** | Also search cold triples. Archived hits surface separately and trigger a background promote. Single-project scope only. | [optional] [default to false]
+**Question** | **string** | The question in plain language. yggy finds the documents that answer it. | 
+**TopK** | Pointer to **int32** | How many documents to return, best first. | [optional] [default to 5]
+**Mode** | Pointer to **string** | How documents are found and ranked. &#x60;hybrid&#x60; (default) uses the facts yggy extracted and the document text; &#x60;lexical&#x60; uses the document text only; &#x60;graph&#x60; returns only documents the extracted facts point to. | [optional] [default to "hybrid"]
+**Include** | Pointer to **[]string** | Extra knowledge to attach to the answer. &#x60;facts&#x60; (also accepted as &#x60;triples&#x60;) adds the facts extracted from the returned documents; &#x60;entities&#x60; adds the people, organizations and things they mention; &#x60;identity&#x60; adds only entities with an approved identity, such as a register number. | [optional] 
+**IncludeArchived** | Pointer to **bool** | Also search archived facts. They are returned in &#x60;archivedHits&#x60; and brought back into the live graph in the background. Project queries only. | [optional] [default to false]
+**Hops** | Pointer to **int32** | How many relations to follow from what the question found. With 1, yggy also looks at the entities directly related to the facts and entities it found, and the documents those relations come from; each further hop counts half as much, so direct matches stay on top. &#x60;0&#x60; turns this off. Ignored in &#x60;lexical&#x60; mode. | [optional] [default to 1]
 
 ## Methods
 
@@ -148,6 +149,31 @@ SetIncludeArchived sets IncludeArchived field to given value.
 `func (o *QueryProjectRequest) HasIncludeArchived() bool`
 
 HasIncludeArchived returns a boolean if a field has been set.
+
+### GetHops
+
+`func (o *QueryProjectRequest) GetHops() int32`
+
+GetHops returns the Hops field if non-nil, zero value otherwise.
+
+### GetHopsOk
+
+`func (o *QueryProjectRequest) GetHopsOk() (*int32, bool)`
+
+GetHopsOk returns a tuple with the Hops field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetHops
+
+`func (o *QueryProjectRequest) SetHops(v int32)`
+
+SetHops sets Hops field to given value.
+
+### HasHops
+
+`func (o *QueryProjectRequest) HasHops() bool`
+
+HasHops returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

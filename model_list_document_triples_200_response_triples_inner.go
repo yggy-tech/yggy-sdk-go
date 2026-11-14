@@ -30,6 +30,8 @@ type ListDocumentTriples200ResponseTriplesInner struct {
 	SubjectId *string `json:"subjectId,omitempty"`
 	SubjectType *string `json:"subjectType,omitempty"`
 	SubjectIdentityUri *string `json:"subjectIdentityUri,omitempty"`
+	SubjectStatus *string `json:"subjectStatus,omitempty"`
+	ObjectStatus *string `json:"objectStatus,omitempty"`
 	ObjectId *string `json:"objectId,omitempty"`
 	ObjectType *string `json:"objectType,omitempty"`
 	ObjectIdentityUri *string `json:"objectIdentityUri,omitempty"`
@@ -38,6 +40,7 @@ type ListDocumentTriples200ResponseTriplesInner struct {
 	ExtractionMethod *string `json:"extractionMethod,omitempty"`
 	Evidence []string `json:"evidence,omitempty"`
 	EvidenceRegionId *string `json:"evidenceRegionId,omitempty"`
+	EvidenceImageId *string `json:"evidenceImageId,omitempty"`
 	Note *string `json:"note,omitempty"`
 	CreatedAt *string `json:"created_at,omitempty"`
 	Status *string `json:"status,omitempty"`
@@ -297,6 +300,70 @@ func (o *ListDocumentTriples200ResponseTriplesInner) SetSubjectIdentityUri(v str
 	o.SubjectIdentityUri = &v
 }
 
+// GetSubjectStatus returns the SubjectStatus field value if set, zero value otherwise.
+func (o *ListDocumentTriples200ResponseTriplesInner) GetSubjectStatus() string {
+	if o == nil || IsNil(o.SubjectStatus) {
+		var ret string
+		return ret
+	}
+	return *o.SubjectStatus
+}
+
+// GetSubjectStatusOk returns a tuple with the SubjectStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListDocumentTriples200ResponseTriplesInner) GetSubjectStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.SubjectStatus) {
+		return nil, false
+	}
+	return o.SubjectStatus, true
+}
+
+// HasSubjectStatus returns a boolean if a field has been set.
+func (o *ListDocumentTriples200ResponseTriplesInner) HasSubjectStatus() bool {
+	if o != nil && !IsNil(o.SubjectStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetSubjectStatus gets a reference to the given string and assigns it to the SubjectStatus field.
+func (o *ListDocumentTriples200ResponseTriplesInner) SetSubjectStatus(v string) {
+	o.SubjectStatus = &v
+}
+
+// GetObjectStatus returns the ObjectStatus field value if set, zero value otherwise.
+func (o *ListDocumentTriples200ResponseTriplesInner) GetObjectStatus() string {
+	if o == nil || IsNil(o.ObjectStatus) {
+		var ret string
+		return ret
+	}
+	return *o.ObjectStatus
+}
+
+// GetObjectStatusOk returns a tuple with the ObjectStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListDocumentTriples200ResponseTriplesInner) GetObjectStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.ObjectStatus) {
+		return nil, false
+	}
+	return o.ObjectStatus, true
+}
+
+// HasObjectStatus returns a boolean if a field has been set.
+func (o *ListDocumentTriples200ResponseTriplesInner) HasObjectStatus() bool {
+	if o != nil && !IsNil(o.ObjectStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetObjectStatus gets a reference to the given string and assigns it to the ObjectStatus field.
+func (o *ListDocumentTriples200ResponseTriplesInner) SetObjectStatus(v string) {
+	o.ObjectStatus = &v
+}
+
 // GetObjectId returns the ObjectId field value if set, zero value otherwise.
 func (o *ListDocumentTriples200ResponseTriplesInner) GetObjectId() string {
 	if o == nil || IsNil(o.ObjectId) {
@@ -553,6 +620,38 @@ func (o *ListDocumentTriples200ResponseTriplesInner) SetEvidenceRegionId(v strin
 	o.EvidenceRegionId = &v
 }
 
+// GetEvidenceImageId returns the EvidenceImageId field value if set, zero value otherwise.
+func (o *ListDocumentTriples200ResponseTriplesInner) GetEvidenceImageId() string {
+	if o == nil || IsNil(o.EvidenceImageId) {
+		var ret string
+		return ret
+	}
+	return *o.EvidenceImageId
+}
+
+// GetEvidenceImageIdOk returns a tuple with the EvidenceImageId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListDocumentTriples200ResponseTriplesInner) GetEvidenceImageIdOk() (*string, bool) {
+	if o == nil || IsNil(o.EvidenceImageId) {
+		return nil, false
+	}
+	return o.EvidenceImageId, true
+}
+
+// HasEvidenceImageId returns a boolean if a field has been set.
+func (o *ListDocumentTriples200ResponseTriplesInner) HasEvidenceImageId() bool {
+	if o != nil && !IsNil(o.EvidenceImageId) {
+		return true
+	}
+
+	return false
+}
+
+// SetEvidenceImageId gets a reference to the given string and assigns it to the EvidenceImageId field.
+func (o *ListDocumentTriples200ResponseTriplesInner) SetEvidenceImageId(v string) {
+	o.EvidenceImageId = &v
+}
+
 // GetNote returns the Note field value if set, zero value otherwise.
 func (o *ListDocumentTriples200ResponseTriplesInner) GetNote() string {
 	if o == nil || IsNil(o.Note) {
@@ -677,6 +776,12 @@ func (o ListDocumentTriples200ResponseTriplesInner) ToMap() (map[string]interfac
 	if !IsNil(o.SubjectIdentityUri) {
 		toSerialize["subjectIdentityUri"] = o.SubjectIdentityUri
 	}
+	if !IsNil(o.SubjectStatus) {
+		toSerialize["subjectStatus"] = o.SubjectStatus
+	}
+	if !IsNil(o.ObjectStatus) {
+		toSerialize["objectStatus"] = o.ObjectStatus
+	}
 	if !IsNil(o.ObjectId) {
 		toSerialize["objectId"] = o.ObjectId
 	}
@@ -700,6 +805,9 @@ func (o ListDocumentTriples200ResponseTriplesInner) ToMap() (map[string]interfac
 	}
 	if !IsNil(o.EvidenceRegionId) {
 		toSerialize["evidenceRegionId"] = o.EvidenceRegionId
+	}
+	if !IsNil(o.EvidenceImageId) {
+		toSerialize["evidenceImageId"] = o.EvidenceImageId
 	}
 	if !IsNil(o.Note) {
 		toSerialize["note"] = o.Note

@@ -29,6 +29,8 @@ type ListProjects200ResponseProjectsInner struct {
 	OrganizationId string `json:"organizationId"`
 	ExternalId NullableString `json:"externalId,omitempty"`
 	Kind *string `json:"kind,omitempty"`
+	// Who in the organization can see that this project exists. `private` (the default): only project members and organization owners and admins. `public`: every organization member sees its name in the project list, but only members can open it. A personal project (My files) is always `private`.
+	Visibility string `json:"visibility"`
 	ExtractionPurpose NullableString `json:"extractionPurpose,omitempty"`
 	ExtractionInclude []string `json:"extractionInclude,omitempty"`
 	ExtractionSkip []string `json:"extractionSkip,omitempty"`
@@ -36,9 +38,14 @@ type ListProjects200ResponseProjectsInner struct {
 	EntityMergeMode *string `json:"entityMergeMode,omitempty"`
 	CreatedAt *string `json:"createdAt,omitempty"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
-	DocumentCount int32 `json:"documentCount"`
-	TripleCount int32 `json:"tripleCount"`
-	EntityCount int32 `json:"entityCount"`
+	// Documents in the project. Null when `isMember` is false: a public project's numbers are for its members only.
+	DocumentCount NullableInt32 `json:"documentCount"`
+	// Relations (triples) in the project. Null when `isMember` is false: a public project's numbers are for its members only.
+	TripleCount NullableInt32 `json:"tripleCount"`
+	// Entities in the project. Null when `isMember` is false: a public project's numbers are for its members only.
+	EntityCount NullableInt32 `json:"entityCount"`
+	// True when the caller can open the project: a project member, an organization owner or admin, or an organization API key. False for a public project the caller is not a member of.
+	IsMember bool `json:"isMember"`
 }
 
 type _ListProjects200ResponseProjectsInner ListProjects200ResponseProjectsInner
@@ -47,16 +54,18 @@ type _ListProjects200ResponseProjectsInner ListProjects200ResponseProjectsInner
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewListProjects200ResponseProjectsInner(id string, slug string, name string, color string, organizationId string, documentCount int32, tripleCount int32, entityCount int32) *ListProjects200ResponseProjectsInner {
+func NewListProjects200ResponseProjectsInner(id string, slug string, name string, color string, organizationId string, visibility string, documentCount NullableInt32, tripleCount NullableInt32, entityCount NullableInt32, isMember bool) *ListProjects200ResponseProjectsInner {
 	this := ListProjects200ResponseProjectsInner{}
 	this.Id = id
 	this.Slug = slug
 	this.Name = name
 	this.Color = color
 	this.OrganizationId = organizationId
+	this.Visibility = visibility
 	this.DocumentCount = documentCount
 	this.TripleCount = tripleCount
 	this.EntityCount = entityCount
+	this.IsMember = isMember
 	return &this
 }
 
@@ -260,6 +269,30 @@ func (o *ListProjects200ResponseProjectsInner) HasKind() bool {
 // SetKind gets a reference to the given string and assigns it to the Kind field.
 func (o *ListProjects200ResponseProjectsInner) SetKind(v string) {
 	o.Kind = &v
+}
+
+// GetVisibility returns the Visibility field value
+func (o *ListProjects200ResponseProjectsInner) GetVisibility() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Visibility
+}
+
+// GetVisibilityOk returns a tuple with the Visibility field value
+// and a boolean to check if the value has been set.
+func (o *ListProjects200ResponseProjectsInner) GetVisibilityOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Visibility, true
+}
+
+// SetVisibility sets field value
+func (o *ListProjects200ResponseProjectsInner) SetVisibility(v string) {
+	o.Visibility = v
 }
 
 // GetExtractionPurpose returns the ExtractionPurpose field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -497,75 +530,105 @@ func (o *ListProjects200ResponseProjectsInner) SetUpdatedAt(v string) {
 }
 
 // GetDocumentCount returns the DocumentCount field value
+// If the value is explicit nil, the zero value for int32 will be returned
 func (o *ListProjects200ResponseProjectsInner) GetDocumentCount() int32 {
-	if o == nil {
+	if o == nil || o.DocumentCount.Get() == nil {
 		var ret int32
 		return ret
 	}
 
-	return o.DocumentCount
+	return *o.DocumentCount.Get()
 }
 
 // GetDocumentCountOk returns a tuple with the DocumentCount field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListProjects200ResponseProjectsInner) GetDocumentCountOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.DocumentCount, true
+	return o.DocumentCount.Get(), o.DocumentCount.IsSet()
 }
 
 // SetDocumentCount sets field value
 func (o *ListProjects200ResponseProjectsInner) SetDocumentCount(v int32) {
-	o.DocumentCount = v
+	o.DocumentCount.Set(&v)
 }
 
 // GetTripleCount returns the TripleCount field value
+// If the value is explicit nil, the zero value for int32 will be returned
 func (o *ListProjects200ResponseProjectsInner) GetTripleCount() int32 {
-	if o == nil {
+	if o == nil || o.TripleCount.Get() == nil {
 		var ret int32
 		return ret
 	}
 
-	return o.TripleCount
+	return *o.TripleCount.Get()
 }
 
 // GetTripleCountOk returns a tuple with the TripleCount field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListProjects200ResponseProjectsInner) GetTripleCountOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.TripleCount, true
+	return o.TripleCount.Get(), o.TripleCount.IsSet()
 }
 
 // SetTripleCount sets field value
 func (o *ListProjects200ResponseProjectsInner) SetTripleCount(v int32) {
-	o.TripleCount = v
+	o.TripleCount.Set(&v)
 }
 
 // GetEntityCount returns the EntityCount field value
+// If the value is explicit nil, the zero value for int32 will be returned
 func (o *ListProjects200ResponseProjectsInner) GetEntityCount() int32 {
-	if o == nil {
+	if o == nil || o.EntityCount.Get() == nil {
 		var ret int32
 		return ret
 	}
 
-	return o.EntityCount
+	return *o.EntityCount.Get()
 }
 
 // GetEntityCountOk returns a tuple with the EntityCount field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ListProjects200ResponseProjectsInner) GetEntityCountOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.EntityCount, true
+	return o.EntityCount.Get(), o.EntityCount.IsSet()
 }
 
 // SetEntityCount sets field value
 func (o *ListProjects200ResponseProjectsInner) SetEntityCount(v int32) {
-	o.EntityCount = v
+	o.EntityCount.Set(&v)
+}
+
+// GetIsMember returns the IsMember field value
+func (o *ListProjects200ResponseProjectsInner) GetIsMember() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.IsMember
+}
+
+// GetIsMemberOk returns a tuple with the IsMember field value
+// and a boolean to check if the value has been set.
+func (o *ListProjects200ResponseProjectsInner) GetIsMemberOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.IsMember, true
+}
+
+// SetIsMember sets field value
+func (o *ListProjects200ResponseProjectsInner) SetIsMember(v bool) {
+	o.IsMember = v
 }
 
 func (o ListProjects200ResponseProjectsInner) MarshalJSON() ([]byte, error) {
@@ -589,6 +652,7 @@ func (o ListProjects200ResponseProjectsInner) ToMap() (map[string]interface{}, e
 	if !IsNil(o.Kind) {
 		toSerialize["kind"] = o.Kind
 	}
+	toSerialize["visibility"] = o.Visibility
 	if o.ExtractionPurpose.IsSet() {
 		toSerialize["extractionPurpose"] = o.ExtractionPurpose.Get()
 	}
@@ -610,9 +674,10 @@ func (o ListProjects200ResponseProjectsInner) ToMap() (map[string]interface{}, e
 	if !IsNil(o.UpdatedAt) {
 		toSerialize["updatedAt"] = o.UpdatedAt
 	}
-	toSerialize["documentCount"] = o.DocumentCount
-	toSerialize["tripleCount"] = o.TripleCount
-	toSerialize["entityCount"] = o.EntityCount
+	toSerialize["documentCount"] = o.DocumentCount.Get()
+	toSerialize["tripleCount"] = o.TripleCount.Get()
+	toSerialize["entityCount"] = o.EntityCount.Get()
+	toSerialize["isMember"] = o.IsMember
 	return toSerialize, nil
 }
 
@@ -626,9 +691,11 @@ func (o *ListProjects200ResponseProjectsInner) UnmarshalJSON(data []byte) (err e
 		"name",
 		"color",
 		"organizationId",
+		"visibility",
 		"documentCount",
 		"tripleCount",
 		"entityCount",
+		"isMember",
 	}
 
 	allProperties := make(map[string]interface{})
