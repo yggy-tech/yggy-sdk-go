@@ -4,11 +4,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Answer** | **string** | Short extractive answer from the top context. Empty when nothing was retrieved. | 
-**Contexts** | [**[]QueryProject200ResponseContextsInner**](QueryProject200ResponseContextsInner.md) |  | 
-**Entities** | Pointer to [**[]QueryProject200ResponseEntitiesInner**](QueryProject200ResponseEntitiesInner.md) | Present when include asks for entities or identity | [optional] 
-**Triples** | Pointer to [**[]QueryProject200ResponseTriplesInner**](QueryProject200ResponseTriplesInner.md) | Present when include asks for triples | [optional] 
+**Answer** | **string** | The sentence from the best document that answers the question. Empty when nothing matched. | 
+**Contexts** | [**[]QueryProject200ResponseContextsInner**](QueryProject200ResponseContextsInner.md) | The documents that answer the question, best first | 
+**Entities** | Pointer to [**[]QueryProject200ResponseEntitiesInner**](QueryProject200ResponseEntitiesInner.md) | Present when &#x60;include&#x60; asks for entities or identity | [optional] 
+**Triples** | Pointer to [**[]QueryProject200ResponseTriplesInner**](QueryProject200ResponseTriplesInner.md) | The facts of the returned documents. Present when &#x60;include&#x60; asks for facts (or triples). | [optional] 
 **ArchivedHits** | Pointer to [**[]QueryProject200ResponseArchivedHitsInner**](QueryProject200ResponseArchivedHitsInner.md) | Present when includeArchived was requested on a single project | [optional] 
+**Graph** | Pointer to [**QueryProject200ResponseGraph**](QueryProject200ResponseGraph.md) |  | [optional] 
 
 ## Methods
 
@@ -143,6 +144,31 @@ SetArchivedHits sets ArchivedHits field to given value.
 `func (o *QueryProject200Response) HasArchivedHits() bool`
 
 HasArchivedHits returns a boolean if a field has been set.
+
+### GetGraph
+
+`func (o *QueryProject200Response) GetGraph() QueryProject200ResponseGraph`
+
+GetGraph returns the Graph field if non-nil, zero value otherwise.
+
+### GetGraphOk
+
+`func (o *QueryProject200Response) GetGraphOk() (*QueryProject200ResponseGraph, bool)`
+
+GetGraphOk returns a tuple with the Graph field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetGraph
+
+`func (o *QueryProject200Response) SetGraph(v QueryProject200ResponseGraph)`
+
+SetGraph sets Graph field to given value.
+
+### HasGraph
+
+`func (o *QueryProject200Response) HasGraph() bool`
+
+HasGraph returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

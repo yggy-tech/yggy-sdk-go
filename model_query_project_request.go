@@ -22,16 +22,18 @@ var _ MappedNullable = &QueryProjectRequest{}
 
 // QueryProjectRequest struct for QueryProjectRequest
 type QueryProjectRequest struct {
-	// Natural-language question to retrieve documents for
+	// The question in plain language. yggy finds the documents that answer it.
 	Question string `json:"question"`
-	// Maximum number of ranked contexts to return
+	// How many documents to return, best first.
 	TopK *int32 `json:"topK,omitempty"`
-	// hybrid combines document text with graph matches; lexical uses document text only; graph uses graph matches only
+	// How documents are found and ranked. `hybrid` (default) uses the facts yggy extracted and the document text; `lexical` uses the document text only; `graph` returns only documents the extracted facts point to.
 	Mode *string `json:"mode,omitempty"`
-	// Optional graph fields to attach. Omit for the default retrieve body. identity alone returns only entities with an approved identity.
+	// Extra knowledge to attach to the answer. `facts` (also accepted as `triples`) adds the facts extracted from the returned documents; `entities` adds the people, organizations and things they mention; `identity` adds only entities with an approved identity, such as a register number.
 	Include []string `json:"include,omitempty"`
-	// Also search cold triples. Archived hits surface separately and trigger a background promote. Single-project scope only.
+	// Also search archived facts. They are returned in `archivedHits` and brought back into the live graph in the background. Project queries only.
 	IncludeArchived *bool `json:"includeArchived,omitempty"`
+	// How many relations to follow from what the question found. With 1, yggy also looks at the entities directly related to the facts and entities it found, and the documents those relations come from; each further hop counts half as much, so direct matches stay on top. `0` turns this off. Ignored in `lexical` mode.
+	Hops *int32 `json:"hops,omitempty"`
 }
 
 type _QueryProjectRequest QueryProjectRequest
@@ -49,6 +51,8 @@ func NewQueryProjectRequest(question string) *QueryProjectRequest {
 	this.Mode = &mode
 	var includeArchived bool = false
 	this.IncludeArchived = &includeArchived
+	var hops int32 = 1
+	this.Hops = &hops
 	return &this
 }
 
@@ -63,6 +67,8 @@ func NewQueryProjectRequestWithDefaults() *QueryProjectRequest {
 	this.Mode = &mode
 	var includeArchived bool = false
 	this.IncludeArchived = &includeArchived
+	var hops int32 = 1
+	this.Hops = &hops
 	return &this
 }
 
@@ -218,6 +224,38 @@ func (o *QueryProjectRequest) SetIncludeArchived(v bool) {
 	o.IncludeArchived = &v
 }
 
+// GetHops returns the Hops field value if set, zero value otherwise.
+func (o *QueryProjectRequest) GetHops() int32 {
+	if o == nil || IsNil(o.Hops) {
+		var ret int32
+		return ret
+	}
+	return *o.Hops
+}
+
+// GetHopsOk returns a tuple with the Hops field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryProjectRequest) GetHopsOk() (*int32, bool) {
+	if o == nil || IsNil(o.Hops) {
+		return nil, false
+	}
+	return o.Hops, true
+}
+
+// HasHops returns a boolean if a field has been set.
+func (o *QueryProjectRequest) HasHops() bool {
+	if o != nil && !IsNil(o.Hops) {
+		return true
+	}
+
+	return false
+}
+
+// SetHops gets a reference to the given int32 and assigns it to the Hops field.
+func (o *QueryProjectRequest) SetHops(v int32) {
+	o.Hops = &v
+}
+
 func (o QueryProjectRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -240,6 +278,9 @@ func (o QueryProjectRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.IncludeArchived) {
 		toSerialize["includeArchived"] = o.IncludeArchived
+	}
+	if !IsNil(o.Hops) {
+		toSerialize["hops"] = o.Hops
 	}
 	return toSerialize, nil
 }
