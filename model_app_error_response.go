@@ -17,38 +17,38 @@ import (
 	"fmt"
 )
 
-// checks if the ListProjects400Response type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &ListProjects400Response{}
+// checks if the AppErrorResponse type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AppErrorResponse{}
 
-// ListProjects400Response struct for ListProjects400Response
-type ListProjects400Response struct {
+// AppErrorResponse struct for AppErrorResponse
+type AppErrorResponse struct {
 	Success bool `json:"success"`
-	Error ListProjects400ResponseError `json:"error"`
+	Error AppErrorResponseError `json:"error"`
 }
 
-type _ListProjects400Response ListProjects400Response
+type _AppErrorResponse AppErrorResponse
 
-// NewListProjects400Response instantiates a new ListProjects400Response object
+// NewAppErrorResponse instantiates a new AppErrorResponse object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewListProjects400Response(success bool, error_ ListProjects400ResponseError) *ListProjects400Response {
-	this := ListProjects400Response{}
+func NewAppErrorResponse(success bool, error_ AppErrorResponseError) *AppErrorResponse {
+	this := AppErrorResponse{}
 	this.Success = success
 	this.Error = error_
 	return &this
 }
 
-// NewListProjects400ResponseWithDefaults instantiates a new ListProjects400Response object
+// NewAppErrorResponseWithDefaults instantiates a new AppErrorResponse object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewListProjects400ResponseWithDefaults() *ListProjects400Response {
-	this := ListProjects400Response{}
+func NewAppErrorResponseWithDefaults() *AppErrorResponse {
+	this := AppErrorResponse{}
 	return &this
 }
 
 // GetSuccess returns the Success field value
-func (o *ListProjects400Response) GetSuccess() bool {
+func (o *AppErrorResponse) GetSuccess() bool {
 	if o == nil {
 		var ret bool
 		return ret
@@ -59,7 +59,7 @@ func (o *ListProjects400Response) GetSuccess() bool {
 
 // GetSuccessOk returns a tuple with the Success field value
 // and a boolean to check if the value has been set.
-func (o *ListProjects400Response) GetSuccessOk() (*bool, bool) {
+func (o *AppErrorResponse) GetSuccessOk() (*bool, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -67,14 +67,14 @@ func (o *ListProjects400Response) GetSuccessOk() (*bool, bool) {
 }
 
 // SetSuccess sets field value
-func (o *ListProjects400Response) SetSuccess(v bool) {
+func (o *AppErrorResponse) SetSuccess(v bool) {
 	o.Success = v
 }
 
 // GetError returns the Error field value
-func (o *ListProjects400Response) GetError() ListProjects400ResponseError {
+func (o *AppErrorResponse) GetError() AppErrorResponseError {
 	if o == nil {
-		var ret ListProjects400ResponseError
+		var ret AppErrorResponseError
 		return ret
 	}
 
@@ -83,7 +83,7 @@ func (o *ListProjects400Response) GetError() ListProjects400ResponseError {
 
 // GetErrorOk returns a tuple with the Error field value
 // and a boolean to check if the value has been set.
-func (o *ListProjects400Response) GetErrorOk() (*ListProjects400ResponseError, bool) {
+func (o *AppErrorResponse) GetErrorOk() (*AppErrorResponseError, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -91,11 +91,11 @@ func (o *ListProjects400Response) GetErrorOk() (*ListProjects400ResponseError, b
 }
 
 // SetError sets field value
-func (o *ListProjects400Response) SetError(v ListProjects400ResponseError) {
+func (o *AppErrorResponse) SetError(v AppErrorResponseError) {
 	o.Error = v
 }
 
-func (o ListProjects400Response) MarshalJSON() ([]byte, error) {
+func (o AppErrorResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -103,14 +103,14 @@ func (o ListProjects400Response) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o ListProjects400Response) ToMap() (map[string]interface{}, error) {
+func (o AppErrorResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["success"] = o.Success
 	toSerialize["error"] = o.Error
 	return toSerialize, nil
 }
 
-func (o *ListProjects400Response) UnmarshalJSON(data []byte) (err error) {
+func (o *AppErrorResponse) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
@@ -133,53 +133,53 @@ func (o *ListProjects400Response) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varListProjects400Response := _ListProjects400Response{}
+	varAppErrorResponse := _AppErrorResponse{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varListProjects400Response)
+	err = decoder.Decode(&varAppErrorResponse)
 
 	if err != nil {
 		return err
 	}
 
-	*o = ListProjects400Response(varListProjects400Response)
+	*o = AppErrorResponse(varAppErrorResponse)
 
 	return err
 }
 
-type NullableListProjects400Response struct {
-	value *ListProjects400Response
+type NullableAppErrorResponse struct {
+	value *AppErrorResponse
 	isSet bool
 }
 
-func (v NullableListProjects400Response) Get() *ListProjects400Response {
+func (v NullableAppErrorResponse) Get() *AppErrorResponse {
 	return v.value
 }
 
-func (v *NullableListProjects400Response) Set(val *ListProjects400Response) {
+func (v *NullableAppErrorResponse) Set(val *AppErrorResponse) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableListProjects400Response) IsSet() bool {
+func (v NullableAppErrorResponse) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableListProjects400Response) Unset() {
+func (v *NullableAppErrorResponse) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableListProjects400Response(val *ListProjects400Response) *NullableListProjects400Response {
-	return &NullableListProjects400Response{value: val, isSet: true}
+func NewNullableAppErrorResponse(val *AppErrorResponse) *NullableAppErrorResponse {
+	return &NullableAppErrorResponse{value: val, isSet: true}
 }
 
-func (v NullableListProjects400Response) MarshalJSON() ([]byte, error) {
+func (v NullableAppErrorResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableListProjects400Response) UnmarshalJSON(src []byte) error {
+func (v *NullableAppErrorResponse) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

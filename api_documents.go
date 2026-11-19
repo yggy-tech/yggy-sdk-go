@@ -144,7 +144,7 @@ func (a *DocumentsAPIService) DeleteDocumentExecute(r ApiDeleteDocumentRequest) 
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v ListProjects400Response
+			var v AppErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -287,7 +287,7 @@ func (a *DocumentsAPIService) DownloadDocumentExecute(r ApiDownloadDocumentReque
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v ListProjects400Response
+			var v AppErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -430,7 +430,7 @@ func (a *DocumentsAPIService) GetDocumentExecute(r ApiGetDocumentRequest) (*List
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v ListProjects400Response
+			var v AppErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -706,7 +706,7 @@ func (a *DocumentsAPIService) ListDocumentTriplesExecute(r ApiListDocumentTriple
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v ListProjects400Response
+			var v AppErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1088,7 +1088,7 @@ func (a *DocumentsAPIService) ReExtractDocumentExecute(r ApiReExtractDocumentReq
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v ListProjects400Response
+			var v AppErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1099,7 +1099,7 @@ func (a *DocumentsAPIService) ReExtractDocumentExecute(r ApiReExtractDocumentReq
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v ListProjects400Response
+			var v AppErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1425,9 +1425,13 @@ type ApiUploadDocumentRequest struct {
 	title *string
 	source *string
 	originSystem *string
+	externalId *string
+	metadata *string
 	projectId2 *string
+	extractionScope *string
 	desiredTier *string
 	inferenceMode *string
+	onboarding *string
 }
 
 func (r ApiUploadDocumentRequest) XYggyOrganizationId(xYggyOrganizationId string) ApiUploadDocumentRequest {
@@ -1441,7 +1445,7 @@ func (r ApiUploadDocumentRequest) File(file *os.File) ApiUploadDocumentRequest {
 	return r
 }
 
-// Plain text or markdown body. Used when no file is uploaded.
+// Plain text or markdown body. Used when no file is uploaded: it is processed like an uploaded markdown file. With noteKind it becomes a yggy note instead.
 func (r ApiUploadDocumentRequest) Text(text string) ApiUploadDocumentRequest {
 	r.text = &text
 	return r
@@ -1483,9 +1487,27 @@ func (r ApiUploadDocumentRequest) OriginSystem(originSystem string) ApiUploadDoc
 	return r
 }
 
+// Your own id for the document. Returned as externalId in query results and chat citations.
+func (r ApiUploadDocumentRequest) ExternalId(externalId string) ApiUploadDocumentRequest {
+	r.externalId = &externalId
+	return r
+}
+
+// JSON object of your own key-value pairs for the document, for example {\\\&quot;region\\\&quot;:\\\&quot;EU\\\&quot;,\\\&quot;priority\\\&quot;:2}. Values are strings, numbers or booleans; at most 50 keys and 8192 bytes. Returned as metadata in query results and chat citations.
+func (r ApiUploadDocumentRequest) Metadata(metadata string) ApiUploadDocumentRequest {
+	r.metadata = &metadata
+	return r
+}
+
 // Project ID to bind the document to at upload time
 func (r ApiUploadDocumentRequest) ProjectId2(projectId2 string) ApiUploadDocumentRequest {
 	r.projectId2 = &projectId2
+	return r
+}
+
+// Set by yggy Systems: extract the document at system level only (systems, interfaces, data stores, schema types, owners). Needs the systems entitlement. Counts only when the document is first ingested; later extractions keep the scope the document got.
+func (r ApiUploadDocumentRequest) ExtractionScope(extractionScope string) ApiUploadDocumentRequest {
+	r.extractionScope = &extractionScope
 	return r
 }
 
@@ -1498,6 +1520,12 @@ func (r ApiUploadDocumentRequest) DesiredTier(desiredTier string) ApiUploadDocum
 // Inference routing for extraction. Defaults to org settings.
 func (r ApiUploadDocumentRequest) InferenceMode(inferenceMode string) ApiUploadDocumentRequest {
 	r.inferenceMode = &inferenceMode
+	return r
+}
+
+// First-run onboarding request; the server decides whether the free first batch applies.
+func (r ApiUploadDocumentRequest) Onboarding(onboarding string) ApiUploadDocumentRequest {
+	r.onboarding = &onboarding
 	return r
 }
 
@@ -1603,14 +1631,26 @@ func (a *DocumentsAPIService) UploadDocumentExecute(r ApiUploadDocumentRequest) 
 	if r.originSystem != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "originSystem", r.originSystem, "", "")
 	}
+	if r.externalId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "externalId", r.externalId, "", "")
+	}
+	if r.metadata != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "metadata", r.metadata, "", "")
+	}
 	if r.projectId2 != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "projectId", r.projectId2, "", "")
+	}
+	if r.extractionScope != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "extractionScope", r.extractionScope, "", "")
 	}
 	if r.desiredTier != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "desiredTier", r.desiredTier, "", "")
 	}
 	if r.inferenceMode != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "inferenceMode", r.inferenceMode, "", "")
+	}
+	if r.onboarding != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "onboarding", r.onboarding, "", "")
 	}
 	if r.ctx != nil {
 		// API Key Authentication
