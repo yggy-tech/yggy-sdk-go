@@ -7,6 +7,12 @@ Name | Type | Description | Notes
 **DocumentId** | **string** | Document that grounded the answer | 
 **Source** | Pointer to **string** | Caller-supplied source id when present | [optional] 
 **Snippet** | Pointer to **string** | Evidence text when the tool returned it | [optional] 
+**ImageId** | Pointer to **string** | Document image the cited passage came from, read from the document text; set with imagePlace | [optional] 
+**ImagePlace** | Pointer to **string** | Where that image sits in the document, e.g. \&quot;Slide 3\&quot; | [optional] 
+**ExternalId** | Pointer to **string** | Your own id for the document, as sent on upload | [optional] 
+**OriginSystem** | Pointer to **string** | Business system the data originates from | [optional] 
+**WebUrl** | Pointer to **string** | Link to the document in your system | [optional] 
+**Metadata** | Pointer to [**map[string]QueryProject200ResponseContextsInnerMetadataValue**](QueryProject200ResponseContextsInnerMetadataValue.md) | Your own key-value pairs, as sent on upload. Imported documents carry fields of their source here. | [optional] 
 
 ## Methods
 
@@ -96,6 +102,156 @@ SetSnippet sets Snippet field to given value.
 `func (o *Chat200ResponseDataCitationsInner) HasSnippet() bool`
 
 HasSnippet returns a boolean if a field has been set.
+
+### GetImageId
+
+`func (o *Chat200ResponseDataCitationsInner) GetImageId() string`
+
+GetImageId returns the ImageId field if non-nil, zero value otherwise.
+
+### GetImageIdOk
+
+`func (o *Chat200ResponseDataCitationsInner) GetImageIdOk() (*string, bool)`
+
+GetImageIdOk returns a tuple with the ImageId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetImageId
+
+`func (o *Chat200ResponseDataCitationsInner) SetImageId(v string)`
+
+SetImageId sets ImageId field to given value.
+
+### HasImageId
+
+`func (o *Chat200ResponseDataCitationsInner) HasImageId() bool`
+
+HasImageId returns a boolean if a field has been set.
+
+### GetImagePlace
+
+`func (o *Chat200ResponseDataCitationsInner) GetImagePlace() string`
+
+GetImagePlace returns the ImagePlace field if non-nil, zero value otherwise.
+
+### GetImagePlaceOk
+
+`func (o *Chat200ResponseDataCitationsInner) GetImagePlaceOk() (*string, bool)`
+
+GetImagePlaceOk returns a tuple with the ImagePlace field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetImagePlace
+
+`func (o *Chat200ResponseDataCitationsInner) SetImagePlace(v string)`
+
+SetImagePlace sets ImagePlace field to given value.
+
+### HasImagePlace
+
+`func (o *Chat200ResponseDataCitationsInner) HasImagePlace() bool`
+
+HasImagePlace returns a boolean if a field has been set.
+
+### GetExternalId
+
+`func (o *Chat200ResponseDataCitationsInner) GetExternalId() string`
+
+GetExternalId returns the ExternalId field if non-nil, zero value otherwise.
+
+### GetExternalIdOk
+
+`func (o *Chat200ResponseDataCitationsInner) GetExternalIdOk() (*string, bool)`
+
+GetExternalIdOk returns a tuple with the ExternalId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExternalId
+
+`func (o *Chat200ResponseDataCitationsInner) SetExternalId(v string)`
+
+SetExternalId sets ExternalId field to given value.
+
+### HasExternalId
+
+`func (o *Chat200ResponseDataCitationsInner) HasExternalId() bool`
+
+HasExternalId returns a boolean if a field has been set.
+
+### GetOriginSystem
+
+`func (o *Chat200ResponseDataCitationsInner) GetOriginSystem() string`
+
+GetOriginSystem returns the OriginSystem field if non-nil, zero value otherwise.
+
+### GetOriginSystemOk
+
+`func (o *Chat200ResponseDataCitationsInner) GetOriginSystemOk() (*string, bool)`
+
+GetOriginSystemOk returns a tuple with the OriginSystem field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetOriginSystem
+
+`func (o *Chat200ResponseDataCitationsInner) SetOriginSystem(v string)`
+
+SetOriginSystem sets OriginSystem field to given value.
+
+### HasOriginSystem
+
+`func (o *Chat200ResponseDataCitationsInner) HasOriginSystem() bool`
+
+HasOriginSystem returns a boolean if a field has been set.
+
+### GetWebUrl
+
+`func (o *Chat200ResponseDataCitationsInner) GetWebUrl() string`
+
+GetWebUrl returns the WebUrl field if non-nil, zero value otherwise.
+
+### GetWebUrlOk
+
+`func (o *Chat200ResponseDataCitationsInner) GetWebUrlOk() (*string, bool)`
+
+GetWebUrlOk returns a tuple with the WebUrl field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetWebUrl
+
+`func (o *Chat200ResponseDataCitationsInner) SetWebUrl(v string)`
+
+SetWebUrl sets WebUrl field to given value.
+
+### HasWebUrl
+
+`func (o *Chat200ResponseDataCitationsInner) HasWebUrl() bool`
+
+HasWebUrl returns a boolean if a field has been set.
+
+### GetMetadata
+
+`func (o *Chat200ResponseDataCitationsInner) GetMetadata() map[string]QueryProject200ResponseContextsInnerMetadataValue`
+
+GetMetadata returns the Metadata field if non-nil, zero value otherwise.
+
+### GetMetadataOk
+
+`func (o *Chat200ResponseDataCitationsInner) GetMetadataOk() (*map[string]QueryProject200ResponseContextsInnerMetadataValue, bool)`
+
+GetMetadataOk returns a tuple with the Metadata field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMetadata
+
+`func (o *Chat200ResponseDataCitationsInner) SetMetadata(v map[string]QueryProject200ResponseContextsInnerMetadataValue)`
+
+SetMetadata sets Metadata field to given value.
+
+### HasMetadata
+
+`func (o *Chat200ResponseDataCitationsInner) HasMetadata() bool`
+
+HasMetadata returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

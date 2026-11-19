@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **OrganizationId** | **string** |  | 
 **ExternalId** | Pointer to **NullableString** |  | [optional] 
 **Kind** | Pointer to **string** |  | [optional] 
+**Visibility** | **string** | Who in the organization can see that this project exists. &#x60;private&#x60; (the default): only project members and organization owners and admins. &#x60;public&#x60;: every organization member sees its name in the project list, but only members can open it. A personal project (My files) is always &#x60;private&#x60;. | 
 **ExtractionPurpose** | Pointer to **NullableString** |  | [optional] 
 **ExtractionInclude** | Pointer to **[]string** |  | [optional] 
 **ExtractionSkip** | Pointer to **[]string** |  | [optional] 
@@ -23,7 +24,7 @@ Name | Type | Description | Notes
 
 ### NewCreateProject201ResponseProject
 
-`func NewCreateProject201ResponseProject(id string, slug string, name string, color string, organizationId string, ) *CreateProject201ResponseProject`
+`func NewCreateProject201ResponseProject(id string, slug string, name string, color string, organizationId string, visibility string, ) *CreateProject201ResponseProject`
 
 NewCreateProject201ResponseProject instantiates a new CreateProject201ResponseProject object
 This constructor will assign default values to properties that have it defined,
@@ -197,6 +198,26 @@ SetKind sets Kind field to given value.
 `func (o *CreateProject201ResponseProject) HasKind() bool`
 
 HasKind returns a boolean if a field has been set.
+
+### GetVisibility
+
+`func (o *CreateProject201ResponseProject) GetVisibility() string`
+
+GetVisibility returns the Visibility field if non-nil, zero value otherwise.
+
+### GetVisibilityOk
+
+`func (o *CreateProject201ResponseProject) GetVisibilityOk() (*string, bool)`
+
+GetVisibilityOk returns a tuple with the Visibility field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVisibility
+
+`func (o *CreateProject201ResponseProject) SetVisibility(v string)`
+
+SetVisibility sets Visibility field to given value.
+
 
 ### GetExtractionPurpose
 

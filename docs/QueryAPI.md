@@ -4,8 +4,8 @@ All URIs are relative to *https://api.yggy.tech*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**QueryOrganization**](QueryAPI.md#QueryOrganization) | **Post** /api/v1/query | Retrieve ranked documents across the organization
-[**QueryProject**](QueryAPI.md#QueryProject) | **Post** /api/v1/projects/{projectId}/query | Retrieve ranked documents for a project
+[**QueryOrganization**](QueryAPI.md#QueryOrganization) | **Post** /api/v1/query | Find the documents that answer a question across the organization
+[**QueryProject**](QueryAPI.md#QueryProject) | **Post** /api/v1/projects/{projectId}/query | Find the documents that answer a question in a project
 
 
 
@@ -13,7 +13,7 @@ Method | HTTP request | Description
 
 > QueryProject200Response QueryOrganization(ctx).XYggyOrganizationId(xYggyOrganizationId).QueryProjectRequest(queryProjectRequest).Execute()
 
-Retrieve ranked documents across the organization
+Find the documents that answer a question across the organization
 
 
 
@@ -81,7 +81,7 @@ Name | Type | Description  | Notes
 
 > QueryProject200Response QueryProject(ctx, projectId).XYggyOrganizationId(xYggyOrganizationId).QueryProjectRequest(queryProjectRequest).Execute()
 
-Retrieve ranked documents for a project
+Find the documents that answer a question in a project
 
 
 

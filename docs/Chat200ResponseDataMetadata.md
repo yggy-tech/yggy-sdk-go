@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ProcessingTimeMs** | **float32** |  | 
 **TierApplied** | **string** |  | 
+**TierReason** | Pointer to **string** | Why the applied tier differs from the requested one | [optional] 
 
 ## Methods
 
@@ -65,6 +66,31 @@ and a boolean to check if the value has been set.
 
 SetTierApplied sets TierApplied field to given value.
 
+
+### GetTierReason
+
+`func (o *Chat200ResponseDataMetadata) GetTierReason() string`
+
+GetTierReason returns the TierReason field if non-nil, zero value otherwise.
+
+### GetTierReasonOk
+
+`func (o *Chat200ResponseDataMetadata) GetTierReasonOk() (*string, bool)`
+
+GetTierReasonOk returns a tuple with the TierReason field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTierReason
+
+`func (o *Chat200ResponseDataMetadata) SetTierReason(v string)`
+
+SetTierReason sets TierReason field to given value.
+
+### HasTierReason
+
+`func (o *Chat200ResponseDataMetadata) HasTierReason() bool`
+
+HasTierReason returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
