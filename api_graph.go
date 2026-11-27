@@ -139,7 +139,7 @@ func (a *GraphAPIService) GetEntityByIdentityExecute(r ApiGetEntityByIdentityReq
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v ListProjects400Response
+			var v AppErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

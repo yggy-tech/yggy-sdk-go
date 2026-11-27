@@ -29,6 +29,7 @@ type ListDocuments200ResponseDocumentsInner struct {
 	Source *string `json:"source,omitempty"`
 	SourceKind NullableString `json:"sourceKind,omitempty"`
 	OriginSystem NullableString `json:"originSystem,omitempty"`
+	SourceExternalId NullableString `json:"sourceExternalId,omitempty"`
 	OwnerExternalId NullableString `json:"ownerExternalId,omitempty"`
 	OwnerDisplayName NullableString `json:"ownerDisplayName,omitempty"`
 	ContentType string `json:"contentType"`
@@ -39,6 +40,7 @@ type ListDocuments200ResponseDocumentsInner struct {
 	Error *string `json:"error,omitempty"`
 	Code *string `json:"code,omitempty"`
 	FailureMessage *string `json:"failureMessage,omitempty"`
+	FailedStage *string `json:"failedStage,omitempty"`
 	StorageUrl *string `json:"storageUrl,omitempty"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	NoteKind NullableString `json:"noteKind,omitempty"`
@@ -57,6 +59,7 @@ type ListDocuments200ResponseDocumentsInner struct {
 	SourceAuthor NullableString `json:"sourceAuthor,omitempty"`
 	SourceMetadata NullableString `json:"sourceMetadata,omitempty"`
 	AttachedTo *ListDocuments200ResponseDocumentsInnerAttachedTo `json:"attachedTo,omitempty"`
+	StorageLocation NullableListDocuments200ResponseDocumentsInnerStorageLocation `json:"storageLocation,omitempty"`
 	MailAttachments []ListDocuments200ResponseDocumentsInnerMailAttachmentsInner `json:"mailAttachments,omitempty"`
 	ProjectExternalId NullableString `json:"projectExternalId,omitempty"`
 }
@@ -312,6 +315,48 @@ func (o *ListDocuments200ResponseDocumentsInner) SetOriginSystemNil() {
 // UnsetOriginSystem ensures that no value is present for OriginSystem, not even an explicit nil
 func (o *ListDocuments200ResponseDocumentsInner) UnsetOriginSystem() {
 	o.OriginSystem.Unset()
+}
+
+// GetSourceExternalId returns the SourceExternalId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListDocuments200ResponseDocumentsInner) GetSourceExternalId() string {
+	if o == nil || IsNil(o.SourceExternalId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.SourceExternalId.Get()
+}
+
+// GetSourceExternalIdOk returns a tuple with the SourceExternalId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListDocuments200ResponseDocumentsInner) GetSourceExternalIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SourceExternalId.Get(), o.SourceExternalId.IsSet()
+}
+
+// HasSourceExternalId returns a boolean if a field has been set.
+func (o *ListDocuments200ResponseDocumentsInner) HasSourceExternalId() bool {
+	if o != nil && o.SourceExternalId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSourceExternalId gets a reference to the given NullableString and assigns it to the SourceExternalId field.
+func (o *ListDocuments200ResponseDocumentsInner) SetSourceExternalId(v string) {
+	o.SourceExternalId.Set(&v)
+}
+// SetSourceExternalIdNil sets the value for SourceExternalId to be an explicit nil
+func (o *ListDocuments200ResponseDocumentsInner) SetSourceExternalIdNil() {
+	o.SourceExternalId.Set(nil)
+}
+
+// UnsetSourceExternalId ensures that no value is present for SourceExternalId, not even an explicit nil
+func (o *ListDocuments200ResponseDocumentsInner) UnsetSourceExternalId() {
+	o.SourceExternalId.Unset()
 }
 
 // GetOwnerExternalId returns the OwnerExternalId field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -620,6 +665,38 @@ func (o *ListDocuments200ResponseDocumentsInner) HasFailureMessage() bool {
 // SetFailureMessage gets a reference to the given string and assigns it to the FailureMessage field.
 func (o *ListDocuments200ResponseDocumentsInner) SetFailureMessage(v string) {
 	o.FailureMessage = &v
+}
+
+// GetFailedStage returns the FailedStage field value if set, zero value otherwise.
+func (o *ListDocuments200ResponseDocumentsInner) GetFailedStage() string {
+	if o == nil || IsNil(o.FailedStage) {
+		var ret string
+		return ret
+	}
+	return *o.FailedStage
+}
+
+// GetFailedStageOk returns a tuple with the FailedStage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListDocuments200ResponseDocumentsInner) GetFailedStageOk() (*string, bool) {
+	if o == nil || IsNil(o.FailedStage) {
+		return nil, false
+	}
+	return o.FailedStage, true
+}
+
+// HasFailedStage returns a boolean if a field has been set.
+func (o *ListDocuments200ResponseDocumentsInner) HasFailedStage() bool {
+	if o != nil && !IsNil(o.FailedStage) {
+		return true
+	}
+
+	return false
+}
+
+// SetFailedStage gets a reference to the given string and assigns it to the FailedStage field.
+func (o *ListDocuments200ResponseDocumentsInner) SetFailedStage(v string) {
+	o.FailedStage = &v
 }
 
 // GetStorageUrl returns the StorageUrl field value if set, zero value otherwise.
@@ -1338,6 +1415,48 @@ func (o *ListDocuments200ResponseDocumentsInner) SetAttachedTo(v ListDocuments20
 	o.AttachedTo = &v
 }
 
+// GetStorageLocation returns the StorageLocation field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ListDocuments200ResponseDocumentsInner) GetStorageLocation() ListDocuments200ResponseDocumentsInnerStorageLocation {
+	if o == nil || IsNil(o.StorageLocation.Get()) {
+		var ret ListDocuments200ResponseDocumentsInnerStorageLocation
+		return ret
+	}
+	return *o.StorageLocation.Get()
+}
+
+// GetStorageLocationOk returns a tuple with the StorageLocation field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ListDocuments200ResponseDocumentsInner) GetStorageLocationOk() (*ListDocuments200ResponseDocumentsInnerStorageLocation, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.StorageLocation.Get(), o.StorageLocation.IsSet()
+}
+
+// HasStorageLocation returns a boolean if a field has been set.
+func (o *ListDocuments200ResponseDocumentsInner) HasStorageLocation() bool {
+	if o != nil && o.StorageLocation.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetStorageLocation gets a reference to the given NullableListDocuments200ResponseDocumentsInnerStorageLocation and assigns it to the StorageLocation field.
+func (o *ListDocuments200ResponseDocumentsInner) SetStorageLocation(v ListDocuments200ResponseDocumentsInnerStorageLocation) {
+	o.StorageLocation.Set(&v)
+}
+// SetStorageLocationNil sets the value for StorageLocation to be an explicit nil
+func (o *ListDocuments200ResponseDocumentsInner) SetStorageLocationNil() {
+	o.StorageLocation.Set(nil)
+}
+
+// UnsetStorageLocation ensures that no value is present for StorageLocation, not even an explicit nil
+func (o *ListDocuments200ResponseDocumentsInner) UnsetStorageLocation() {
+	o.StorageLocation.Unset()
+}
+
 // GetMailAttachments returns the MailAttachments field value if set, zero value otherwise.
 func (o *ListDocuments200ResponseDocumentsInner) GetMailAttachments() []ListDocuments200ResponseDocumentsInnerMailAttachmentsInner {
 	if o == nil || IsNil(o.MailAttachments) {
@@ -1439,6 +1558,9 @@ func (o ListDocuments200ResponseDocumentsInner) ToMap() (map[string]interface{},
 	if o.OriginSystem.IsSet() {
 		toSerialize["originSystem"] = o.OriginSystem.Get()
 	}
+	if o.SourceExternalId.IsSet() {
+		toSerialize["sourceExternalId"] = o.SourceExternalId.Get()
+	}
 	if o.OwnerExternalId.IsSet() {
 		toSerialize["ownerExternalId"] = o.OwnerExternalId.Get()
 	}
@@ -1460,6 +1582,9 @@ func (o ListDocuments200ResponseDocumentsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.FailureMessage) {
 		toSerialize["failureMessage"] = o.FailureMessage
+	}
+	if !IsNil(o.FailedStage) {
+		toSerialize["failedStage"] = o.FailedStage
 	}
 	if !IsNil(o.StorageUrl) {
 		toSerialize["storageUrl"] = o.StorageUrl
@@ -1514,6 +1639,9 @@ func (o ListDocuments200ResponseDocumentsInner) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.AttachedTo) {
 		toSerialize["attachedTo"] = o.AttachedTo
+	}
+	if o.StorageLocation.IsSet() {
+		toSerialize["storageLocation"] = o.StorageLocation.Get()
 	}
 	if !IsNil(o.MailAttachments) {
 		toSerialize["mailAttachments"] = o.MailAttachments

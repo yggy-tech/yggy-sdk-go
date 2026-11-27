@@ -24,6 +24,8 @@ var _ MappedNullable = &Chat200ResponseDataMetadata{}
 type Chat200ResponseDataMetadata struct {
 	ProcessingTimeMs float32 `json:"processingTimeMs"`
 	TierApplied string `json:"tierApplied"`
+	// Why the applied tier differs from the requested one
+	TierReason *string `json:"tierReason,omitempty"`
 }
 
 type _Chat200ResponseDataMetadata Chat200ResponseDataMetadata
@@ -95,6 +97,38 @@ func (o *Chat200ResponseDataMetadata) SetTierApplied(v string) {
 	o.TierApplied = v
 }
 
+// GetTierReason returns the TierReason field value if set, zero value otherwise.
+func (o *Chat200ResponseDataMetadata) GetTierReason() string {
+	if o == nil || IsNil(o.TierReason) {
+		var ret string
+		return ret
+	}
+	return *o.TierReason
+}
+
+// GetTierReasonOk returns a tuple with the TierReason field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Chat200ResponseDataMetadata) GetTierReasonOk() (*string, bool) {
+	if o == nil || IsNil(o.TierReason) {
+		return nil, false
+	}
+	return o.TierReason, true
+}
+
+// HasTierReason returns a boolean if a field has been set.
+func (o *Chat200ResponseDataMetadata) HasTierReason() bool {
+	if o != nil && !IsNil(o.TierReason) {
+		return true
+	}
+
+	return false
+}
+
+// SetTierReason gets a reference to the given string and assigns it to the TierReason field.
+func (o *Chat200ResponseDataMetadata) SetTierReason(v string) {
+	o.TierReason = &v
+}
+
 func (o Chat200ResponseDataMetadata) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -107,6 +141,9 @@ func (o Chat200ResponseDataMetadata) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["processingTimeMs"] = o.ProcessingTimeMs
 	toSerialize["tierApplied"] = o.TierApplied
+	if !IsNil(o.TierReason) {
+		toSerialize["tierReason"] = o.TierReason
+	}
 	return toSerialize, nil
 }
 
