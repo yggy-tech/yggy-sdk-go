@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 **DocumentId** | **string** |  | 
 **Step** | Pointer to **string** |  | [optional] 
 **Progress** | **float32** |  | 
+**DocumentStatus** | Pointer to **string** |  | [optional] 
 **Message** | Pointer to **string** |  | [optional] 
 **Paused** | Pointer to **bool** |  | [optional] 
 **Completed** | **bool** |  | 
@@ -22,6 +23,7 @@ Name | Type | Description | Notes
 **WorkflowError** | Pointer to **string** |  | [optional] 
 **Retryable** | Pointer to **bool** |  | [optional] 
 **TriplesExtracted** | Pointer to **float32** |  | [optional] 
+**Outcome** | Pointer to **string** |  | [optional] 
 **InputTokens** | Pointer to **float32** |  | [optional] 
 **OutputTokens** | Pointer to **float32** |  | [optional] 
 **ExtractionTier** | Pointer to **string** |  | [optional] 
@@ -115,6 +117,31 @@ and a boolean to check if the value has been set.
 
 SetProgress sets Progress field to given value.
 
+
+### GetDocumentStatus
+
+`func (o *GetDocumentStatus200Response) GetDocumentStatus() string`
+
+GetDocumentStatus returns the DocumentStatus field if non-nil, zero value otherwise.
+
+### GetDocumentStatusOk
+
+`func (o *GetDocumentStatus200Response) GetDocumentStatusOk() (*string, bool)`
+
+GetDocumentStatusOk returns a tuple with the DocumentStatus field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDocumentStatus
+
+`func (o *GetDocumentStatus200Response) SetDocumentStatus(v string)`
+
+SetDocumentStatus sets DocumentStatus field to given value.
+
+### HasDocumentStatus
+
+`func (o *GetDocumentStatus200Response) HasDocumentStatus() bool`
+
+HasDocumentStatus returns a boolean if a field has been set.
 
 ### GetMessage
 
@@ -480,6 +507,31 @@ SetTriplesExtracted sets TriplesExtracted field to given value.
 `func (o *GetDocumentStatus200Response) HasTriplesExtracted() bool`
 
 HasTriplesExtracted returns a boolean if a field has been set.
+
+### GetOutcome
+
+`func (o *GetDocumentStatus200Response) GetOutcome() string`
+
+GetOutcome returns the Outcome field if non-nil, zero value otherwise.
+
+### GetOutcomeOk
+
+`func (o *GetDocumentStatus200Response) GetOutcomeOk() (*string, bool)`
+
+GetOutcomeOk returns a tuple with the Outcome field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetOutcome
+
+`func (o *GetDocumentStatus200Response) SetOutcome(v string)`
+
+SetOutcome sets Outcome field to given value.
+
+### HasOutcome
+
+`func (o *GetDocumentStatus200Response) HasOutcome() bool`
+
+HasOutcome returns a boolean if a field has been set.
 
 ### GetInputTokens
 

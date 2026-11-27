@@ -394,7 +394,7 @@ Name | Type | Description  | Notes
 
 ## ListDocuments
 
-> ListDocuments200Response ListDocuments(ctx, projectId).ProjectId2(projectId2).Status(status).Archived(archived).Limit(limit).Offset(offset).SortBy(sortBy).SortDir(sortDir).Q(q).FolderId(folderId).NoteKind(noteKind).XYggyOrganizationId(xYggyOrganizationId).Execute()
+> ListDocuments200Response ListDocuments(ctx, projectId).ProjectId2(projectId2).Status(status).Archived(archived).Limit(limit).Offset(offset).SortBy(sortBy).SortDir(sortDir).Q(q).FolderId(folderId).SourceKind(sourceKind).NoteKind(noteKind).XYggyOrganizationId(xYggyOrganizationId).Execute()
 
 List documents for a project
 
@@ -423,12 +423,13 @@ func main() {
 	sortDir := "sortDir_example" // string |  (optional) (default to "desc")
 	q := "q_example" // string | Case-insensitive substring search over title and source filename/path. (optional)
 	folderId := "folderId_example" // string | Browse documents in this folder (externalId). Use the literal value `root` for unfiled documents only. Omit to list all documents (legacy). (optional)
+	sourceKind := "sourceKind_example" // string | When set, only documents that came in through this channel, such as FORWARDED for forwarded mail. (optional)
 	noteKind := "noteKind_example" // string | When set, only documents of this note kind (capture, daily, or note). (optional)
 	xYggyOrganizationId := "xYggyOrganizationId_example" // string |  (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.DocumentsAPI.ListDocuments(context.Background(), projectId).ProjectId2(projectId2).Status(status).Archived(archived).Limit(limit).Offset(offset).SortBy(sortBy).SortDir(sortDir).Q(q).FolderId(folderId).NoteKind(noteKind).XYggyOrganizationId(xYggyOrganizationId).Execute()
+	resp, r, err := apiClient.DocumentsAPI.ListDocuments(context.Background(), projectId).ProjectId2(projectId2).Status(status).Archived(archived).Limit(limit).Offset(offset).SortBy(sortBy).SortDir(sortDir).Q(q).FolderId(folderId).SourceKind(sourceKind).NoteKind(noteKind).XYggyOrganizationId(xYggyOrganizationId).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `DocumentsAPI.ListDocuments``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -463,6 +464,7 @@ Name | Type | Description  | Notes
  **sortDir** | **string** |  | [default to &quot;desc&quot;]
  **q** | **string** | Case-insensitive substring search over title and source filename/path. | 
  **folderId** | **string** | Browse documents in this folder (externalId). Use the literal value &#x60;root&#x60; for unfiled documents only. Omit to list all documents (legacy). | 
+ **sourceKind** | **string** | When set, only documents that came in through this channel, such as FORWARDED for forwarded mail. | 
  **noteKind** | **string** | When set, only documents of this note kind (capture, daily, or note). | 
  **xYggyOrganizationId** | **string** |  | 
 
@@ -709,7 +711,7 @@ Name | Type | Description  | Notes
 
 ## UploadDocument
 
-> UploadDocument202Response UploadDocument(ctx, projectId).XYggyOrganizationId(xYggyOrganizationId).File(file).Text(text).NoteKind(noteKind).ParentNoteId(parentNoteId).ForLinkId(forLinkId).Title(title).Source(source).OriginSystem(originSystem).ProjectId2(projectId2).DesiredTier(desiredTier).InferenceMode(inferenceMode).Execute()
+> UploadDocument202Response UploadDocument(ctx, projectId).XYggyOrganizationId(xYggyOrganizationId).File(file).Text(text).NoteKind(noteKind).ParentNoteId(parentNoteId).ForLinkId(forLinkId).Title(title).Source(source).OriginSystem(originSystem).SourceCreatedAt(sourceCreatedAt).ExternalId(externalId).Metadata(metadata).ProjectId2(projectId2).ExtractionScope(extractionScope).DesiredTier(desiredTier).InferenceMode(inferenceMode).Onboarding(onboarding).Execute()
 
 Upload and queue a document for async processing (project-scoped)
 
@@ -731,20 +733,25 @@ func main() {
 	projectId := "projectId_example" // string | 
 	xYggyOrganizationId := "xYggyOrganizationId_example" // string |  (optional)
 	file := os.NewFile(1234, "some_file") // *os.File | The document file to upload. Optional when text is set. (optional)
-	text := "text_example" // string | Plain text or markdown body. Used when no file is uploaded. (optional)
+	text := "text_example" // string | Plain text or markdown body. Used when no file is uploaded: it is processed like an uploaded markdown file. With noteKind it becomes a yggy note instead. (optional)
 	noteKind := "noteKind_example" // string | Note kind. When set, the upload is stored on the caller's personal organization. (optional)
 	parentNoteId := "parentNoteId_example" // string | yggy notes: attach the file to this note. The file becomes a document of its own that belongs to the note, and needs a file. (optional)
 	forLinkId := "forLinkId_example" // string | yggy Notes: the link attachment of the same note this file was uploaded for (its audio, for a transcript). Needs parentNoteId. (optional)
 	title := "title_example" // string | Document title (optional)
 	source := "source_example" // string | Source identifier (optional)
 	originSystem := "originSystem_example" // string | Business system the data originates from (optional)
+	sourceCreatedAt := *openapiclient.NewUploadDocumentRequestSourceCreatedAt() // UploadDocumentRequestSourceCreatedAt |  (optional)
+	externalId := "externalId_example" // string | Your own id for the document. Returned as externalId in query results and chat citations. (optional)
+	metadata := "metadata_example" // string | JSON object of your own key-value pairs for the document, for example {\\\"region\\\":\\\"EU\\\",\\\"priority\\\":2}. Values are strings, numbers or booleans; at most 50 keys and 8192 bytes. Returned as metadata in query results and chat citations. (optional)
 	projectId2 := "projectId_example" // string | Project ID to bind the document to at upload time (optional)
+	extractionScope := "extractionScope_example" // string | Set by yggy Systems: extract the document at system level only (systems, interfaces, data stores, schema types, owners). Needs the systems entitlement. Counts only when the document is first ingested; later extractions keep the scope the document got. (optional)
 	desiredTier := "desiredTier_example" // string | Model tier for extraction. Defaults to auto. (optional)
 	inferenceMode := "inferenceMode_example" // string | Inference routing for extraction. Defaults to org settings. (optional)
+	onboarding := "onboarding_example" // string | First-run onboarding request; the server decides whether the free first batch applies. (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.DocumentsAPI.UploadDocument(context.Background(), projectId).XYggyOrganizationId(xYggyOrganizationId).File(file).Text(text).NoteKind(noteKind).ParentNoteId(parentNoteId).ForLinkId(forLinkId).Title(title).Source(source).OriginSystem(originSystem).ProjectId2(projectId2).DesiredTier(desiredTier).InferenceMode(inferenceMode).Execute()
+	resp, r, err := apiClient.DocumentsAPI.UploadDocument(context.Background(), projectId).XYggyOrganizationId(xYggyOrganizationId).File(file).Text(text).NoteKind(noteKind).ParentNoteId(parentNoteId).ForLinkId(forLinkId).Title(title).Source(source).OriginSystem(originSystem).SourceCreatedAt(sourceCreatedAt).ExternalId(externalId).Metadata(metadata).ProjectId2(projectId2).ExtractionScope(extractionScope).DesiredTier(desiredTier).InferenceMode(inferenceMode).Onboarding(onboarding).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `DocumentsAPI.UploadDocument``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -772,16 +779,21 @@ Name | Type | Description  | Notes
 
  **xYggyOrganizationId** | **string** |  | 
  **file** | ***os.File** | The document file to upload. Optional when text is set. | 
- **text** | **string** | Plain text or markdown body. Used when no file is uploaded. | 
+ **text** | **string** | Plain text or markdown body. Used when no file is uploaded: it is processed like an uploaded markdown file. With noteKind it becomes a yggy note instead. | 
  **noteKind** | **string** | Note kind. When set, the upload is stored on the caller&#39;s personal organization. | 
  **parentNoteId** | **string** | yggy notes: attach the file to this note. The file becomes a document of its own that belongs to the note, and needs a file. | 
  **forLinkId** | **string** | yggy Notes: the link attachment of the same note this file was uploaded for (its audio, for a transcript). Needs parentNoteId. | 
  **title** | **string** | Document title | 
  **source** | **string** | Source identifier | 
  **originSystem** | **string** | Business system the data originates from | 
+ **sourceCreatedAt** | [**UploadDocumentRequestSourceCreatedAt**](UploadDocumentRequestSourceCreatedAt.md) |  | 
+ **externalId** | **string** | Your own id for the document. Returned as externalId in query results and chat citations. | 
+ **metadata** | **string** | JSON object of your own key-value pairs for the document, for example {\\\&quot;region\\\&quot;:\\\&quot;EU\\\&quot;,\\\&quot;priority\\\&quot;:2}. Values are strings, numbers or booleans; at most 50 keys and 8192 bytes. Returned as metadata in query results and chat citations. | 
  **projectId2** | **string** | Project ID to bind the document to at upload time | 
+ **extractionScope** | **string** | Set by yggy Systems: extract the document at system level only (systems, interfaces, data stores, schema types, owners). Needs the systems entitlement. Counts only when the document is first ingested; later extractions keep the scope the document got. | 
  **desiredTier** | **string** | Model tier for extraction. Defaults to auto. | 
  **inferenceMode** | **string** | Inference routing for extraction. Defaults to org settings. | 
+ **onboarding** | **string** | First-run onboarding request; the server decides whether the free first batch applies. | 
 
 ### Return type
 
